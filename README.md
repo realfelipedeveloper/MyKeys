@@ -77,6 +77,24 @@ Cada app possui targets Nx para `serve`, `build`, `lint`, `typecheck` e
 `test`. Nesta tarefa os apps sao shells minimos; Next.js, NestJS, Tailwind,
 TypeScript strict e testes reais entram nas tarefas especificas da SPEC-001.
 
+### SPEC-001 / TASK-003
+
+Status: concluida.
+
+Packages criados:
+
+- `packages/ui`;
+- `packages/contracts`;
+- `packages/config`;
+- `packages/observability`;
+- `packages/testing`;
+- `packages/crypto`;
+- `packages/shared`.
+
+Cada package possui targets Nx para `build`, `lint`, `typecheck` e `test`.
+Nesta tarefa os packages sao shells minimos e privados; implementacoes reais
+entram nas tarefas especificas da SPEC-001.
+
 ## Stack consolidada
 
 - Monorepo: Nx + pnpm

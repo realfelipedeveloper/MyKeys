@@ -8,3 +8,6 @@
   `tools/**/*.mjs` nos inputs compartilhados para evitar cache obsoleto.
 - 2026-08-05: Na `TASK-002`, os apps foram criados como shells minimos para
   preservar a ordem da SPEC-001; frameworks reais entram nas tarefas dedicadas.
+- 2026-08-05: Na `TASK-003`, os packages foram criados como shells privados e
+  importaveis. O package `@mykeys/crypto` deve permanecer sem algoritmos reais
+  ate haver testes criptograficos dedicados.

@@ -1,0 +1,33 @@
+{
+  "name": "crypto",
+  "projectType": "library",
+  "sourceRoot": "packages/crypto/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/crypto"],
+      "options": {
+        "command": "node tools/build-package.mjs crypto"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs crypto --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs crypto --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs crypto --test"
+      }
+    }
+  },
+  "tags": ["scope:crypto", "type:package", "critical:security"]
+}

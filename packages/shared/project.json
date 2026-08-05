@@ -1,0 +1,33 @@
+{
+  "name": "shared",
+  "projectType": "library",
+  "sourceRoot": "packages/shared/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/shared"],
+      "options": {
+        "command": "node tools/build-package.mjs shared"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs shared --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs shared --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs shared --test"
+      }
+    }
+  },
+  "tags": ["scope:shared", "type:package"]
+}

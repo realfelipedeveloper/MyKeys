@@ -2,7 +2,7 @@
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
   "status": "in_progress",
-  "currentTask": "TASK-002",
+  "currentTask": "TASK-003",
   "updatedAt": "2026-08-05",
   "services": [
     "web",
@@ -36,7 +36,9 @@
     "supply-chain build script approval drift",
     "transitive dependency vulnerabilities",
     "app shell divergence before framework scaffold",
-    "Nx cache invalidation drift for workspace tools"
+    "Nx cache invalidation drift for workspace tools",
+    "package shell divergence before TypeScript scaffold",
+    "premature cryptography implementation without known-answer tests"
   ],
   "requiredTests": [
     "unit",
@@ -45,7 +47,8 @@
     "port-conflict",
     "accessibility",
     "e2e-smoke",
-    "app-startup-smoke"
+    "app-startup-smoke",
+    "package-import-smoke"
   ],
   "requiredDocs": [
     "README",

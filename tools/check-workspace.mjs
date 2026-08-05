@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { mykeysAppNames } from "./mykeys-apps.mjs";
+import { mykeysPackageNames } from "./mykeys-packages.mjs";
 
 const readJson = async (path) => JSON.parse(await readFile(path, "utf8"));
 const exists = async (path) => {
@@ -65,6 +66,27 @@ for (const appName of mykeysAppNames) {
     `${appName} must define typecheck target`,
   );
   assert.ok(projectJson.targets?.test, `${appName} must define test target`);
+}
+
+for (const packageName of mykeysPackageNames) {
+  const projectPath = `packages/${packageName}/project.json`;
+  const sourcePath = `packages/${packageName}/src/index.mjs`;
+
+  assert.ok(await exists(projectPath), `${projectPath} must exist`);
+  assert.ok(await exists(sourcePath), `${sourcePath} must exist`);
+
+  const projectJson = await readJson(projectPath);
+
+  assert.equal(projectJson.name, packageName);
+  assert.equal(projectJson.projectType, "library");
+  assert.equal(projectJson.sourceRoot, `packages/${packageName}/src`);
+  assert.ok(projectJson.targets?.build, `${packageName} must define build target`);
+  assert.ok(projectJson.targets?.lint, `${packageName} must define lint target`);
+  assert.ok(
+    projectJson.targets?.typecheck,
+    `${packageName} must define typecheck target`,
+  );
+  assert.ok(projectJson.targets?.test, `${packageName} must define test target`);
 }
 
 console.log("MyKeys Nx/pnpm workspace foundation is valid.");
