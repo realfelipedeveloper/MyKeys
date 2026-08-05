@@ -1,0 +1,39 @@
+{
+  "name": "notification-worker",
+  "projectType": "application",
+  "sourceRoot": "apps/notification-worker/src",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/notification-worker/src/main.mjs"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/notification-worker"],
+      "options": {
+        "command": "node tools/build-app.mjs notification-worker"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs notification-worker --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs notification-worker --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs notification-worker --test"
+      }
+    }
+  },
+  "tags": ["scope:notification-worker", "type:app"]
+}

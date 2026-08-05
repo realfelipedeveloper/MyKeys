@@ -1,0 +1,39 @@
+{
+  "name": "notification-api",
+  "projectType": "application",
+  "sourceRoot": "apps/notification-api/src",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/notification-api/src/main.mjs"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/notification-api"],
+      "options": {
+        "command": "node tools/build-app.mjs notification-api"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs notification-api --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs notification-api --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs notification-api --test"
+      }
+    }
+  },
+  "tags": ["scope:notification-api", "type:app"]
+}

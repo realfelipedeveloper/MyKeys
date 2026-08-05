@@ -1,0 +1,8 @@
+{
+  "name": "core-api",
+  "kind": "api",
+  "runtime": "http",
+  "portEnv": "MYKEYS_CORE_API_PORT",
+  "defaultPort": 43120,
+  "description": "API central inicial do MyKeys."
+}

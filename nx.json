@@ -10,7 +10,8 @@
     "sharedGlobals": [
       "{workspaceRoot}/package.json",
       "{workspaceRoot}/pnpm-lock.yaml",
-      "{workspaceRoot}/nx.json"
+      "{workspaceRoot}/nx.json",
+      "{workspaceRoot}/tools/**/*.mjs"
     ]
   },
   "targetDefaults": {

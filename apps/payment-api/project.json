@@ -1,0 +1,39 @@
+{
+  "name": "payment-api",
+  "projectType": "application",
+  "sourceRoot": "apps/payment-api/src",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/payment-api/src/main.mjs"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/payment-api"],
+      "options": {
+        "command": "node tools/build-app.mjs payment-api"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs payment-api --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs payment-api --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs payment-api --test"
+      }
+    }
+  },
+  "tags": ["scope:payment-api", "type:app"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "docs",
+  "kind": "documentation",
+  "runtime": "process",
+  "description": "Aplicacao de documentacao inicial do MyKeys."
+}

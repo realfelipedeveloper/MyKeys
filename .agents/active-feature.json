@@ -2,7 +2,7 @@
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
   "status": "in_progress",
-  "currentTask": "TASK-001",
+  "currentTask": "TASK-002",
   "updatedAt": "2026-08-05",
   "services": [
     "web",
@@ -34,7 +34,9 @@
     "cross-project Docker interference",
     "configuration drift",
     "supply-chain build script approval drift",
-    "transitive dependency vulnerabilities"
+    "transitive dependency vulnerabilities",
+    "app shell divergence before framework scaffold",
+    "Nx cache invalidation drift for workspace tools"
   ],
   "requiredTests": [
     "unit",
@@ -42,13 +44,16 @@
     "health",
     "port-conflict",
     "accessibility",
-    "e2e-smoke"
+    "e2e-smoke",
+    "app-startup-smoke"
   ],
   "requiredDocs": [
     "README",
     "architecture",
     "ports",
     "runbook",
-    "ADR"
+    "ADR",
+    "completion-report",
+    "threat-model"
   ]
 }
