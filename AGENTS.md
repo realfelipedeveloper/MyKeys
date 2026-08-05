@@ -51,6 +51,7 @@ Este arquivo define o comportamento obrigatório de todos os agentes e subagente
 - `hotfix/*`
 
 Sem commits diretos em `main` ou `develop`.
+Mensagens de commit devem ser escritas sempre em português.
 
 ## Definição de pronto
 

@@ -30,6 +30,35 @@ Nenhum agente pode implementar código antes de:
 - registrar critérios de aceite;
 - confirmar que as portas do host estão livres.
 
+## Estado de implementação
+
+### SPEC-001 / TASK-001
+
+Status: em implementação.
+
+Fundação criada:
+
+- workspace Nx inicial;
+- pnpm fixado via `packageManager`;
+- lockfile pnpm;
+- layout `apps/` e `packages/`;
+- scripts base `lint`, `typecheck`, `test` e `build`;
+- validação local do workspace;
+- aprovação explícita de build script do `nx`;
+- override de segurança para dependência transitiva vulnerável.
+
+Comandos:
+
+```bash
+corepack enable
+pnpm install
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm nx show projects
+```
+
 ## Stack consolidada
 
 - Monorepo: Nx + pnpm
