@@ -1,0 +1,47 @@
+{
+  "id": "SPEC-001",
+  "title": "Fundação da Plataforma MyKeys",
+  "status": "approved",
+  "services": [
+    "web",
+    "docs",
+    "core-api",
+    "payment-api",
+    "notification-api",
+    "worker",
+    "notification-worker"
+  ],
+  "agents": [
+    "orchestrator",
+    "software-architect",
+    "devops",
+    "backend",
+    "frontend",
+    "qa",
+    "security",
+    "documentation",
+    "product-design"
+  ],
+  "dependencies": [],
+  "risks": [
+    "port conflicts",
+    "unsafe local defaults",
+    "cross-project Docker interference",
+    "configuration drift"
+  ],
+  "requiredTests": [
+    "unit",
+    "integration",
+    "health",
+    "port-conflict",
+    "accessibility",
+    "e2e-smoke"
+  ],
+  "requiredDocs": [
+    "README",
+    "architecture",
+    "ports",
+    "runbook",
+    "ADR"
+  ]
+}
