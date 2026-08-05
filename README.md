@@ -34,7 +34,7 @@ Nenhum agente pode implementar código antes de:
 
 ### SPEC-001 / TASK-001
 
-Status: em implementação.
+Status: concluida.
 
 Fundação criada:
 
@@ -58,6 +58,24 @@ pnpm test
 pnpm build
 pnpm nx show projects
 ```
+
+### SPEC-001 / TASK-002
+
+Status: concluida.
+
+Apps criados:
+
+- `apps/web`;
+- `apps/docs`;
+- `apps/core-api`;
+- `apps/payment-api`;
+- `apps/notification-api`;
+- `apps/worker`;
+- `apps/notification-worker`.
+
+Cada app possui targets Nx para `serve`, `build`, `lint`, `typecheck` e
+`test`. Nesta tarefa os apps sao shells minimos; Next.js, NestJS, Tailwind,
+TypeScript strict e testes reais entram nas tarefas especificas da SPEC-001.
 
 ## Stack consolidada
 

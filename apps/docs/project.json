@@ -1,0 +1,39 @@
+{
+  "name": "docs",
+  "projectType": "application",
+  "sourceRoot": "apps/docs/src",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/docs/src/main.mjs"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/docs"],
+      "options": {
+        "command": "node tools/build-app.mjs docs"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs docs --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs docs --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs docs --test"
+      }
+    }
+  },
+  "tags": ["scope:docs", "type:app"]
+}

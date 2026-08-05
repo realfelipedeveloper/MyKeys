@@ -1,0 +1,6 @@
+{
+  "name": "notification-worker",
+  "kind": "worker",
+  "runtime": "process",
+  "description": "Worker de notificacoes inicial do MyKeys."
+}

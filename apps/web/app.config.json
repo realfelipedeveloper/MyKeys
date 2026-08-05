@@ -1,0 +1,8 @@
+{
+  "name": "web",
+  "kind": "frontend",
+  "runtime": "http",
+  "portEnv": "MYKEYS_WEB_PORT",
+  "defaultPort": 43110,
+  "description": "Portal web inicial do MyKeys."
+}

@@ -1,0 +1,8 @@
+{
+  "name": "notification-api",
+  "kind": "api",
+  "runtime": "http",
+  "portEnv": "MYKEYS_NOTIFICATION_API_PORT",
+  "defaultPort": 43122,
+  "description": "API de notificacoes inicial do MyKeys."
+}

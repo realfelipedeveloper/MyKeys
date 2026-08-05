@@ -1,0 +1,39 @@
+{
+  "name": "core-api",
+  "projectType": "application",
+  "sourceRoot": "apps/core-api/src",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/core-api/src/main.mjs"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/core-api"],
+      "options": {
+        "command": "node tools/build-app.mjs core-api"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs core-api --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs core-api --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-apps.mjs core-api --test"
+      }
+    }
+  },
+  "tags": ["scope:core-api", "type:app"]
+}

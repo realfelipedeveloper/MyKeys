@@ -1,0 +1,6 @@
+{
+  "name": "worker",
+  "kind": "worker",
+  "runtime": "process",
+  "description": "Worker de plataforma inicial do MyKeys."
+}

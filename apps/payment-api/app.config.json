@@ -1,0 +1,8 @@
+{
+  "name": "payment-api",
+  "kind": "api",
+  "runtime": "http",
+  "portEnv": "MYKEYS_PAYMENT_API_PORT",
+  "defaultPort": 43121,
+  "description": "API de pagamentos fake inicial do MyKeys."
+}
