@@ -1,7 +1,9 @@
 {
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
-  "status": "approved",
+  "status": "in_progress",
+  "currentTask": "TASK-001",
+  "updatedAt": "2026-08-05",
   "services": [
     "web",
     "docs",
@@ -22,12 +24,17 @@
     "documentation",
     "product-design"
   ],
-  "dependencies": [],
+  "dependencies": [
+    "pnpm@11.20.0",
+    "nx@23.1.1"
+  ],
   "risks": [
     "port conflicts",
     "unsafe local defaults",
     "cross-project Docker interference",
-    "configuration drift"
+    "configuration drift",
+    "supply-chain build script approval drift",
+    "transitive dependency vulnerabilities"
   ],
   "requiredTests": [
     "unit",

@@ -1,0 +1,7 @@
+packages:
+  - apps/*
+  - packages/*
+allowBuilds:
+  nx: true
+overrides:
+  brace-expansion: 5.0.9

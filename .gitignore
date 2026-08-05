@@ -1,0 +1,15 @@
+node_modules/
+.nx/
+dist/
+coverage/
+tmp/
+
+.env
+.env.*
+!.env.example
+
+package-lock.json
+yarn.lock
+
+.DS_Store
+Thumbs.db
