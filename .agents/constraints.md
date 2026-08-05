@@ -7,3 +7,4 @@
 - Não usar Tailwind fora dos tokens do Design System.
 - Não adicionar dependências sem justificativa.
 - Não alterar testes para mascarar falhas.
+- Mensagens de commit devem ser escritas sempre em português.
