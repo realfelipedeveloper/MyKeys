@@ -1,0 +1,9 @@
+{
+  "name": "@mykeys/observability",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.mjs",
+  "sideEffects": false,
+  "dependencies": {}
+}

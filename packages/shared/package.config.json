@@ -1,0 +1,7 @@
+{
+  "name": "shared",
+  "packageName": "@mykeys/shared",
+  "kind": "shared",
+  "status": "shell",
+  "description": "Pacote compartilhado para tipos e utilitarios comuns."
+}

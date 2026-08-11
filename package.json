@@ -8,10 +8,11 @@
     "nx": "nx",
     "check:workspace": "node tools/check-workspace.mjs",
     "check:apps": "node tools/check-apps.mjs",
-    "lint": "pnpm check:workspace && nx run-many -t lint --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker",
-    "typecheck": "pnpm check:workspace && nx run-many -t typecheck --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker",
-    "test": "pnpm check:workspace && nx run-many -t test --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker",
-    "build": "pnpm check:workspace && nx run-many -t build --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker"
+    "check:packages": "node tools/check-packages.mjs",
+    "lint": "pnpm check:workspace && nx run-many -t lint --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "typecheck": "pnpm check:workspace && nx run-many -t typecheck --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "test": "pnpm check:workspace && nx run-many -t test --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "build": "pnpm check:workspace && nx run-many -t build --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared"
   },
   "devDependencies": {
     "nx": "23.1.1"

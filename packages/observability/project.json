@@ -1,0 +1,33 @@
+{
+  "name": "observability",
+  "projectType": "library",
+  "sourceRoot": "packages/observability/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/observability"],
+      "options": {
+        "command": "node tools/build-package.mjs observability"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs observability --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs observability --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs observability --test"
+      }
+    }
+  },
+  "tags": ["scope:observability", "type:package"]
+}

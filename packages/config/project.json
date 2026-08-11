@@ -1,0 +1,33 @@
+{
+  "name": "config",
+  "projectType": "library",
+  "sourceRoot": "packages/config/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/config"],
+      "options": {
+        "command": "node tools/build-package.mjs config"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs config --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs config --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs config --test"
+      }
+    }
+  },
+  "tags": ["scope:config", "type:package"]
+}

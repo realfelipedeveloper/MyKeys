@@ -1,0 +1,33 @@
+{
+  "name": "testing",
+  "projectType": "library",
+  "sourceRoot": "packages/testing/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/testing"],
+      "options": {
+        "command": "node tools/build-package.mjs testing"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs testing --lint"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs testing --typecheck"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/check-packages.mjs testing --test"
+      }
+    }
+  },
+  "tags": ["scope:testing", "type:package"]
+}
