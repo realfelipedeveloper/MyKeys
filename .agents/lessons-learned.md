@@ -11,3 +11,12 @@
 - 2026-08-05: Na `TASK-003`, os packages foram criados como shells privados e
   importaveis. O package `@mykeys/crypto` deve permanecer sem algoritmos reais
   ate haver testes criptograficos dedicados.
+- 2026-08-11: Na `TASK-004`, `typescript@7.0.2` estava fora da faixa aceita por
+  `typescript-eslint@8.67.0`; o workspace usa `typescript@6.0.3` ate haver
+  compatibilidade oficial.
+- 2026-08-11: `baseUrl` em TypeScript 6 exige `ignoreDeprecations: "6.0"` para
+  manter aliases `paths` sem quebrar o gate. A migracao deve ser revista antes
+  de TypeScript 7.
+- 2026-08-11: No Windows com `fnm`, `pnpm` pode estar disponivel apenas como
+  `pnpm.ps1`; validadores Node que chamam `pnpm exec` precisam usar shell com
+  argumentos controlados ou outro wrapper portavel.

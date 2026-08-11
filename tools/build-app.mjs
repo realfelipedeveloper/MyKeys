@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { mykeysApps } from "./mykeys-apps.mjs";
 
@@ -11,6 +11,7 @@ const config = JSON.parse(await readFile(`apps/${app.name}/app.config.json`, "ut
 assert.deepEqual(config, app, `${app.name} config must match registry`);
 
 const outputPath = `dist/apps/${app.name}`;
+await access(`${outputPath}/main.js`);
 await mkdir(outputPath, { recursive: true });
 await writeFile(
   `${outputPath}/manifest.json`,

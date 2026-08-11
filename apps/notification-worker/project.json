@@ -6,26 +6,26 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node apps/notification-worker/src/main.mjs"
+        "command": "node tools/app-runtime.mjs notification-worker"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/apps/notification-worker"],
       "options": {
-        "command": "node tools/build-app.mjs notification-worker"
+        "command": "pnpm exec tsc -p apps/notification-worker/tsconfig.app.json && node tools/build-app.mjs notification-worker"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs notification-worker --lint"
+        "command": "pnpm exec eslint apps/notification-worker"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs notification-worker --typecheck"
+        "command": "pnpm exec tsc --noEmit -p apps/notification-worker/tsconfig.app.json"
       }
     },
     "test": {

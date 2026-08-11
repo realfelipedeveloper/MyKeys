@@ -6,26 +6,26 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node apps/payment-api/src/main.mjs"
+        "command": "node tools/app-runtime.mjs payment-api"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/apps/payment-api"],
       "options": {
-        "command": "node tools/build-app.mjs payment-api"
+        "command": "pnpm exec tsc -p apps/payment-api/tsconfig.app.json && node tools/build-app.mjs payment-api"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs payment-api --lint"
+        "command": "pnpm exec eslint apps/payment-api"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs payment-api --typecheck"
+        "command": "pnpm exec tsc --noEmit -p apps/payment-api/tsconfig.app.json"
       }
     },
     "test": {

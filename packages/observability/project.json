@@ -7,19 +7,19 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/packages/observability"],
       "options": {
-        "command": "node tools/build-package.mjs observability"
+        "command": "pnpm exec tsc -p packages/observability/tsconfig.lib.json && node tools/build-package.mjs observability"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs observability --lint"
+        "command": "pnpm exec eslint packages/observability"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs observability --typecheck"
+        "command": "pnpm exec tsc --noEmit -p packages/observability/tsconfig.lib.json"
       }
     },
     "test": {

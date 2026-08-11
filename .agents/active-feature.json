@@ -2,8 +2,8 @@
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
   "status": "in_progress",
-  "currentTask": "TASK-003",
-  "updatedAt": "2026-08-05",
+  "currentTask": "TASK-004",
+  "updatedAt": "2026-08-11",
   "services": [
     "web",
     "docs",
@@ -26,7 +26,14 @@
   ],
   "dependencies": [
     "pnpm@11.20.0",
-    "nx@23.1.1"
+    "nx@23.1.1",
+    "typescript@6.0.3",
+    "eslint@10.8.1",
+    "typescript-eslint@8.67.0",
+    "prettier@3.9.6",
+    "@eslint/js@10.0.1",
+    "@types/node@24.13.3",
+    "globals@17.9.0"
   ],
   "risks": [
     "port conflicts",
@@ -38,7 +45,11 @@
     "app shell divergence before framework scaffold",
     "Nx cache invalidation drift for workspace tools",
     "package shell divergence before TypeScript scaffold",
-    "premature cryptography implementation without known-answer tests"
+    "premature cryptography implementation without known-answer tests",
+    "TypeScript and typescript-eslint compatibility drift",
+    "path alias drift",
+    "Prettier churn on legacy documentation",
+    "temporary minimumReleaseAgeExclude entries for typescript-eslint packages"
   ],
   "requiredTests": [
     "unit",
@@ -48,7 +59,10 @@
     "accessibility",
     "e2e-smoke",
     "app-startup-smoke",
-    "package-import-smoke"
+    "package-import-smoke",
+    "format-check",
+    "alias-smoke",
+    "static-analysis"
   ],
   "requiredDocs": [
     "README",

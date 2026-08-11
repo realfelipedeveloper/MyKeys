@@ -7,19 +7,19 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/packages/shared"],
       "options": {
-        "command": "node tools/build-package.mjs shared"
+        "command": "pnpm exec tsc -p packages/shared/tsconfig.lib.json && node tools/build-package.mjs shared"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs shared --lint"
+        "command": "pnpm exec eslint packages/shared"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs shared --typecheck"
+        "command": "pnpm exec tsc --noEmit -p packages/shared/tsconfig.lib.json"
       }
     },
     "test": {

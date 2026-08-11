@@ -2,19 +2,31 @@
   "name": "@mykeys/workspace",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "license": "UNLICENSED",
   "packageManager": "pnpm@11.20.0",
   "scripts": {
     "nx": "nx",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "check:workspace": "node tools/check-workspace.mjs",
+    "check:aliases": "tsc --noEmit -p tsconfig.aliases.json",
     "check:apps": "node tools/check-apps.mjs",
     "check:packages": "node tools/check-packages.mjs",
-    "lint": "pnpm check:workspace && nx run-many -t lint --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
-    "typecheck": "pnpm check:workspace && nx run-many -t typecheck --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
-    "test": "pnpm check:workspace && nx run-many -t test --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
-    "build": "pnpm check:workspace && nx run-many -t build --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared"
+    "lint:tooling": "eslint eslint.config.mjs tools",
+    "lint": "pnpm format:check && pnpm check:workspace && pnpm check:aliases && pnpm lint:tooling && nx run-many -t lint --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "typecheck": "pnpm check:workspace && pnpm check:aliases && nx run-many -t typecheck --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "test": "pnpm check:workspace && pnpm check:aliases && nx run-many -t test --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "build": "pnpm check:workspace && pnpm check:aliases && nx run-many -t build --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared"
   },
   "devDependencies": {
-    "nx": "23.1.1"
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.13.3",
+    "eslint": "10.8.1",
+    "globals": "17.9.0",
+    "nx": "23.1.1",
+    "prettier": "3.9.6",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.67.0"
   }
 }

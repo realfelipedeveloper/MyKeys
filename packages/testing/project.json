@@ -7,19 +7,19 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/packages/testing"],
       "options": {
-        "command": "node tools/build-package.mjs testing"
+        "command": "pnpm exec tsc -p packages/testing/tsconfig.lib.json && node tools/build-package.mjs testing"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs testing --lint"
+        "command": "pnpm exec eslint packages/testing"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs testing --typecheck"
+        "command": "pnpm exec tsc --noEmit -p packages/testing/tsconfig.lib.json"
       }
     },
     "test": {

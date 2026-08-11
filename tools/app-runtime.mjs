@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const workspaceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -10,7 +10,7 @@ export async function loadAppConfig(appName) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
-export async function startApp(appName, args = process.argv.slice(2)) {
+export async function startApp(appName, args = process.argv.slice(3)) {
   const config = await loadAppConfig(appName);
   const payload = {
     app: config.name,
@@ -80,4 +80,17 @@ function registerShutdown(cleanup) {
 
   process.once("SIGINT", shutdown);
   process.once("SIGTERM", shutdown);
+}
+
+const isDirectRun =
+  typeof process.argv[1] === "string" && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectRun) {
+  const [appName, ...args] = process.argv.slice(2);
+
+  if (!appName) {
+    throw new Error("app name is required");
+  }
+
+  await startApp(appName, args);
 }
