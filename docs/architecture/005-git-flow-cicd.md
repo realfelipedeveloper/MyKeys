@@ -29,11 +29,21 @@ devem ser feitas por PR.
 O workflow `.github/workflows/promotions.yml` automatiza a abertura dos PRs de
 promoção:
 
+- push em `feature/*` abre PR para `development`;
 - push/merge em `development` abre PR para `homologation`;
 - push/merge em `homologation` abre PR para `main`.
 
 A automação compara origem e destino, não cria PR duplicado e não executa merge
 automaticamente.
+
+Para permitir criação automática de PR com `GITHUB_TOKEN`, o repositório deve
+manter `Workflow permissions` em `Read and write` e permitir que GitHub Actions
+crie pull requests. Os workflows continuam declarando permissões mínimas por
+arquivo.
+
+Após abrir ou detectar um PR de promoção com mudanças pendentes, a automação
+dispara `MyKeys CI` por `workflow_dispatch` na branch de origem para garantir
+validação mesmo quando o PR foi criado pelo `GITHUB_TOKEN`.
 
 Cada tarefa deve receber texto de PR e texto de merge em português para:
 

@@ -18,3 +18,5 @@
   `homologation` -> `main`.
 - Após merge em `development` ou `homologation`, abrir automaticamente o PR da
   próxima promoção sem executar merge automático.
+- Após push em `feature/*`, abrir automaticamente PR para `development` sem
+  executar merge automático.

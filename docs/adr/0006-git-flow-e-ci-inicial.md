@@ -38,6 +38,8 @@ etapa de promoção:
 
 Criar `.github/workflows/ci.yml` com validação inicial:
 
+- `actions/checkout@v5`;
+- `actions/setup-node@v5` com Node.js `24.14.1`;
 - `pnpm install --frozen-lockfile`;
 - `pnpm check:promotions`;
 - `pnpm lint`;
@@ -51,17 +53,27 @@ Criar `.github/workflows/ci.yml` com validação inicial:
 Adicionar `tools/check-ci.mjs` para validar localmente a configuração do
 workflow.
 
-Criar `.github/workflows/promotions.yml` para abrir automaticamente o próximo
-PR de promoção após atualizações em `development` ou `homologation`.
+Criar `.github/workflows/promotions.yml` para abrir automaticamente:
+
+- PR de `feature/*` para `development` após push em branch de feature;
+- PR de `development` para `homologation` após atualizações em `development`;
+- PR de `homologation` para `main` após atualizações em `homologation`.
 
 Adicionar `tools/check-promotions.mjs` para validar que a automação:
 
+- promove `feature/*` para `development`;
 - promove `development` para `homologation`;
 - promove `homologation` para `main`;
 - verifica diferenças antes de abrir PR;
 - evita PR duplicado;
+- dispara `MyKeys CI` após criar ou detectar PR com mudanças pendentes;
 - não usa `pull_request_target`;
-- não faz merge automático nem push.
+- não faz merge automático, aprovação automática nem push.
+
+Habilitar no repositório `Workflow permissions: Read and write` e `Allow GitHub
+Actions to create and approve pull requests`, necessário para que `GITHUB_TOKEN`
+possa abrir PRs automaticamente. Os workflows permanecem com permissões
+explícitas e mínimas.
 
 ## Alternativas
 
@@ -77,12 +89,18 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - Novos PRs de feature passam a mirar `development` por padrão.
 - A promoção de código antes de `main` fica explícita e auditável.
 - Cada etapa de promoção passa a ter texto de PR e texto de merge padronizados.
-- PRs de promoção passam a ser abertos automaticamente após merge da etapa
-  anterior.
+- PRs de feature e de promoção passam a ser abertos automaticamente conforme a
+  etapa do fluxo.
 - O CI inicial passa a executar os gates locais ja existentes.
 - O CI baseline usa permissões mínimas e não consome secrets.
 - A automação de promoção usa permissões mínimas e aceita apenas o secret
   opcional `MYKEYS_AUTOMATION_TOKEN`.
+- O validador bloqueia uso de `gh pr review`, `gh pr merge` e `git push` na
+  automação de PRs.
+- A automação dispara CI explicitamente para cobrir PRs criados por
+  `GITHUB_TOKEN`.
+- O CI usa actions oficiais em runtime Node 24 e desabilita cache automático do
+  `setup-node`.
 
 ## Consequências negativas
 
@@ -93,6 +111,9 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - PRs criados pelo `GITHUB_TOKEN` podem exigir aprovação manual dos checks pelo
   GitHub; um token opcional `MYKEYS_AUTOMATION_TOKEN` remove essa fricção quando
   configurado.
+- A configuração do GitHub Actions que permite criar PRs também permite aprovar
+  PRs; isso deve permanecer mitigado por validação do workflow e revisão de
+  mudanças nessa automação.
 
 ## Riscos
 

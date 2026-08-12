@@ -27,10 +27,17 @@ assert.match(
   /permissions:\s+contents: read/s,
   "CI must use read-only contents permission",
 );
-assert.match(workflow, /actions\/checkout@v4/, "CI must use official checkout action");
-assert.match(workflow, /actions\/setup-node@v4/, "CI must use official setup-node action");
+assert.match(workflow, /actions\/checkout@v5/, "CI must use official checkout action");
+assert.match(workflow, /actions\/setup-node@v5/, "CI must use official setup-node action");
 assert.match(workflow, /node-version: 24\.14\.1/, "CI must pin the Node version");
+assert.match(
+  workflow,
+  /package-manager-cache: false/,
+  "CI must disable setup-node automatic package-manager cache",
+);
 assert.match(workflow, /corepack prepare pnpm@11\.20\.0 --activate/, "CI must pin pnpm");
+assert.doesNotMatch(workflow, /actions\/checkout@v4/, "CI must not use Node 20 checkout");
+assert.doesNotMatch(workflow, /actions\/setup-node@v4/, "CI must not use Node 20 setup-node");
 assert.doesNotMatch(workflow, /pull_request_target/, "CI must not use pull_request_target");
 assert.doesNotMatch(workflow, /secrets\./, "CI must not consume secrets in the baseline pipeline");
 

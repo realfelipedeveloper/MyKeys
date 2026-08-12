@@ -37,8 +37,14 @@ infraestrutura, criando branches intermediárias e um CI inicial.
 - Registrar que toda tarefa deve receber texto de PR e texto de merge para
   `development`, `homologation` e `main`.
 - Criar CI inicial com GitHub Actions e gates locais existentes.
+- Criar automação para abrir PR de `feature/*` para `development` após push em
+  branch de feature.
 - Criar automação para abrir PR de `development` para `homologation` e de
   `homologation` para `main` após merges.
+- Habilitar no repositório permissão de workflow para criação de PRs pelo
+  GitHub Actions.
+- Disparar `MyKeys CI` pela automação após criar ou detectar PR com mudanças
+  pendentes.
 - Não implementar deploy automático nesta task.
 
 ## Testes executados
@@ -62,19 +68,24 @@ usar `development` como branch padrão. O workflow de CI inicial foi adicionado
 com validações de lint, typecheck, testes, build, audit, Nx e Compose.
 O fluxo também passou a exigir textos de PR e merge para cada etapa de promoção
 até `main`.
-O workflow `MyKeys Promotions` abre automaticamente o próximo PR de promoção
-quando `development` ou `homologation` recebem novos commits.
+O workflow `MyKeys Promotions` abre automaticamente PRs de feature e o próximo
+PR de promoção quando `feature/*`, `development` ou `homologation` recebem
+novos commits.
 
 ## Verificações de segurança
 
 - Workflow usa permissões mínimas `contents: read`.
 - Workflow de promoção usa `pull-requests: write` somente para abrir PRs.
+- Workflow de promoção usa `actions: write` para disparar `MyKeys CI`.
+- Workflow de promoção não faz aprovação, merge ou push.
 - Workflow não usa `pull_request_target`.
 - CI baseline não referencia `secrets.*`.
 - `MYKEYS_AUTOMATION_TOKEN` é opcional para reduzir fricção dos checks em PRs
   criados por automação.
 - Nenhuma dependência npm nova foi adicionada.
-- Actions utilizadas são oficiais: `actions/checkout` e `actions/setup-node`.
+- Actions utilizadas são oficiais e usam runtime Node 24:
+  `actions/checkout@v5` e `actions/setup-node@v5`.
+- Cache automático do `setup-node` permanece desabilitado.
 
 ## Riscos residuais
 
@@ -84,6 +95,8 @@ quando `development` ou `homologation` recebem novos commits.
 - A primeira promoção do workflow é uma etapa de bootstrap.
 - PRs criados com `GITHUB_TOKEN` podem exigir aprovação manual dos checks pelo
   GitHub.
+- A permissão de Actions para criar PRs também habilita aprovação por Actions na
+  configuração do GitHub; o workflow é validado para não executar aprovação.
 
 ## Rollback
 

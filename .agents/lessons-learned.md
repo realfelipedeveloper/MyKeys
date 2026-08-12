@@ -38,3 +38,13 @@
   workflow em `push` para `development` e `homologation`, evitando duplicatas e
   mantendo merge manual. PRs criados com `GITHUB_TOKEN` podem exigir aprovação
   manual dos checks; `MYKEYS_AUTOMATION_TOKEN` fica reservado como alternativa.
+- 2026-08-12: A automação completa de Git Flow também precisa ouvir `push` em
+  `feature/**` para abrir PR automaticamente para `development`; proteger só as
+  branches de promoção não cobre o início do fluxo.
+- 2026-08-12: Para `GITHUB_TOKEN` abrir PRs, o repositório precisa de
+  `Workflow permissions: Read and write` e `Allow GitHub Actions to create and
+approve pull requests`; como a permissão também habilita aprovação, o workflow
+  deve bloquear `gh pr review` em validação local.
+- 2026-08-12: PR criado por `GITHUB_TOKEN` pode não disparar `pull_request` CI;
+  o workflow de abertura automática deve chamar `gh workflow run "MyKeys CI"` na
+  branch de origem para materializar a validação.

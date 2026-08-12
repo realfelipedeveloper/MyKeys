@@ -72,7 +72,8 @@ Criar pipeline GitHub Actions.
 
 Observação: antecipada após a `TASK-005` para corrigir a governança do Git Flow
 antes da continuidade da infraestrutura local. Também inclui automação para
-abrir PRs de promoção entre `development`, `homologation` e `main` após merges.
+abrir PRs de feature para `development` e PRs de promoção entre `development`,
+`homologation` e `main` após merges.
 
 ### TASK-017
 
