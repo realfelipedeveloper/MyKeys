@@ -150,7 +150,8 @@ Governança e CI/CD inicial:
 - workflow `.github/workflows/ci.yml` com lint, typecheck, test, build, audit,
   Nx projects e validação do Docker Compose;
 - workflow `.github/workflows/promotions.yml` para abrir PR automático de
-  `development` para `homologation` e de `homologation` para `main`;
+  `feature/*` para `development`, de `development` para `homologation` e de
+  `homologation` para `main`;
 - validadores locais `pnpm check:ci` e `pnpm check:promotions`.
 
 Comandos principais:

@@ -38,3 +38,22 @@
   workflow em `push` para `development` e `homologation`, evitando duplicatas e
   mantendo merge manual. PRs criados com `GITHUB_TOKEN` podem exigir aprovação
   manual dos checks; `MYKEYS_AUTOMATION_TOKEN` fica reservado como alternativa.
+- 2026-08-12: A automação completa de Git Flow também precisa ouvir `push` em
+  `feature/**` para abrir PR automaticamente para `development`; proteger só as
+  branches de promoção não cobre o início do fluxo.
+- 2026-08-12: Para `GITHUB_TOKEN` abrir PRs, o repositório precisa de
+  `Workflow permissions: Read and write` e `Allow GitHub Actions to create and
+approve pull requests`; como a permissão também habilita aprovação, o workflow
+  deve bloquear `gh pr review` em validação local.
+- 2026-08-12: PR criado por `GITHUB_TOKEN` pode não disparar `pull_request` CI;
+  o workflow de abertura automática deve chamar `gh workflow run "MyKeys CI"` na
+  branch de origem para materializar a validação.
+- 2026-08-12: O CI precisa separar concorrência por `github.event_name`; caso
+  contrário, uma validação `workflow_dispatch` pode cancelar a validação de
+  `push` exigida pelo ruleset.
+- 2026-08-12: Ruleset de promoção deve exigir o check `validate workspace`, mas
+  sem política estrita de branch atualizada, porque `homologation` e `main`
+  acumulam commits de merge próprios durante o Git Flow.
+- 2026-08-12: `workflow_dispatch` pode passar sem aparecer no resumo do PR; a
+  automação deve publicar um commit status `validate workspace` apontando para o
+  run aprovado para satisfazer o ruleset sem fingir validação.

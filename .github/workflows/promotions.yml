@@ -3,6 +3,7 @@ name: MyKeys Promotions
 on:
   push:
     branches:
+      - feature/**
       - development
       - homologation
   workflow_dispatch:
@@ -10,14 +11,23 @@ on:
       source_branch:
         description: Branch de origem da promoção
         required: true
+        type: string
+      target_branch:
+        description: Branch de destino da promoção
+        required: false
         type: choice
+        default: auto
         options:
+          - auto
           - development
           - homologation
+          - main
 
 permissions:
+  actions: write
   contents: read
   pull-requests: write
+  statuses: write
 
 concurrency:
   group: mykeys-promotions-${{ github.ref }}
@@ -27,7 +37,7 @@ jobs:
   open-promotion-pr:
     name: open promotion pull request
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
 
     env:
       GH_TOKEN: ${{ secrets.MYKEYS_AUTOMATION_TOKEN || github.token }}
@@ -40,27 +50,44 @@ jobs:
         run: |
           set -euo pipefail
 
+          MANUAL_TARGET="auto"
+
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             SOURCE_BRANCH="${{ inputs.source_branch }}"
+            MANUAL_TARGET="${{ inputs.target_branch }}"
           else
             SOURCE_BRANCH="${GITHUB_REF_NAME}"
           fi
 
-          case "$SOURCE_BRANCH" in
-            development)
+          if [[ "$MANUAL_TARGET" != "auto" ]]; then
+            TARGET_BRANCH="$MANUAL_TARGET"
+            TITLE="Promover mudanças de ${SOURCE_BRANCH} para ${TARGET_BRANCH}"
+          elif [[ "$SOURCE_BRANCH" == feature/* ]]; then
+            TARGET_BRANCH="development"
+            TITLE="Integrar ${SOURCE_BRANCH} em development"
+          else
+            case "$SOURCE_BRANCH" in
+              development)
               TARGET_BRANCH="homologation"
               TITLE="Promover mudanças de development para homologation"
               ;;
-            homologation)
+              homologation)
               TARGET_BRANCH="main"
               TITLE="Promover mudanças de homologation para main"
               ;;
-            *)
+              *)
               echo "Sem destino de promoção para ${SOURCE_BRANCH}."
               echo "should_promote=false" >> "$GITHUB_OUTPUT"
               exit 0
               ;;
-          esac
+            esac
+          fi
+
+          if [[ "$SOURCE_BRANCH" == "$TARGET_BRANCH" ]]; then
+            echo "Origem e destino são iguais: ${SOURCE_BRANCH}."
+            echo "should_promote=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           echo "source_branch=${SOURCE_BRANCH}" >> "$GITHUB_OUTPUT"
           echo "target_branch=${TARGET_BRANCH}" >> "$GITHUB_OUTPUT"
@@ -96,13 +123,12 @@ jobs:
 
           SOURCE="${{ steps.promotion.outputs.source_branch }}"
           TARGET="${{ steps.promotion.outputs.target_branch }}"
-          PR_URL="$(gh pr list \
-            --repo "${GH_REPO}" \
-            --head "${SOURCE}" \
-            --base "${TARGET}" \
-            --state open \
-            --json url \
-            --jq '.[0].url // ""')"
+          REPO_OWNER="${GH_REPO%%/*}"
+          PR_URL="$(gh api -X GET "repos/${GH_REPO}/pulls" \
+            -f state=open \
+            -f base="${TARGET}" \
+            -f head="${REPO_OWNER}:${SOURCE}" \
+            --jq '.[0].html_url // ""')"
 
           if [[ -n "$PR_URL" ]]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
@@ -127,7 +153,7 @@ jobs:
           cat > "$BODY_FILE" <<BODY
           ## Resumo
 
-          Promove automaticamente as mudanças de \`${SOURCE}\` para \`${TARGET}\` conforme o Git Flow do MyKeys.
+          Abre automaticamente o PR de \`${SOURCE}\` para \`${TARGET}\` conforme o Git Flow do MyKeys.
 
           ## Origem
 
@@ -142,11 +168,11 @@ jobs:
 
           ## Impacto
 
-          Mantém a sequência obrigatória \`feature/* -> development -> homologation -> main\` sem depender da abertura manual do PR de promoção.
+          Mantém a sequência obrigatória \`feature/* -> development -> homologation -> main\` sem depender da abertura manual do PR.
 
           ## Riscos
 
-          Esta automação abre o PR de promoção, mas o merge continua dependendo dos checks obrigatórios e da revisão humana quando aplicável.
+          Esta automação abre o PR, mas o merge continua dependendo dos checks obrigatórios e da revisão humana quando aplicável.
           BODY
 
           echo "path=${BODY_FILE}" >> "$GITHUB_OUTPUT"
@@ -163,3 +189,53 @@ jobs:
             --base "${{ steps.promotion.outputs.target_branch }}" \
             --title "${{ steps.promotion.outputs.title }}" \
             --body-file "${{ steps.body.outputs.path }}"
+
+      - name: Trigger promotion validation
+        if: steps.diff.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCE="${{ steps.promotion.outputs.source_branch }}"
+          SOURCE_SHA="$(gh api "repos/${GH_REPO}/git/ref/heads/${SOURCE}" --jq '.object.sha')"
+
+          gh workflow run "MyKeys CI" \
+            --repo "${GH_REPO}" \
+            --ref "${SOURCE}"
+
+          VALIDATION_RUN_ID=""
+
+          for _ in {1..40}; do
+            VALIDATION_RUN_ID="$(gh api -X GET "repos/${GH_REPO}/actions/workflows/ci.yml/runs" \
+              -f branch="${SOURCE}" \
+              -f event="workflow_dispatch" \
+              -f per_page=20 \
+              --jq ".workflow_runs[] | select(.head_sha == \"${SOURCE_SHA}\") | .id" | head -n 1)"
+
+            if [[ -n "$VALIDATION_RUN_ID" ]]; then
+              break
+            fi
+
+            sleep 3
+          done
+
+          if [[ -z "$VALIDATION_RUN_ID" ]]; then
+            echo "Nao foi possivel localizar a validacao disparada para ${SOURCE_SHA}."
+            exit 1
+          fi
+
+          gh run watch "${VALIDATION_RUN_ID}" \
+            --repo "${GH_REPO}" \
+            --exit-status
+
+          VALIDATION_URL="$(gh run view "${VALIDATION_RUN_ID}" \
+            --repo "${GH_REPO}" \
+            --json url \
+            --jq '.url')"
+
+          gh api "repos/${GH_REPO}/statuses/${SOURCE_SHA}" \
+            -X POST \
+            -f state="success" \
+            -f context="validate workspace" \
+            -f description="MyKeys CI workflow_dispatch passou" \
+            -f target_url="${VALIDATION_URL}"

@@ -63,6 +63,8 @@ Após merge em `development`, a automação deve abrir PR de promoção para
 `homologation`. Após merge em `homologation`, a automação deve abrir PR de
 promoção para `main`. O merge de cada promoção permanece manual e protegido por
 checks.
+Após push em `feature/*`, a automação deve abrir PR para `development` quando
+houver diferenças e ainda não existir PR aberto para a mesma origem e destino.
 
 ## Definição de pronto
 

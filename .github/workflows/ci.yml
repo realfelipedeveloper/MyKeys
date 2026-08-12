@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: mykeys-ci-${{ github.workflow }}-${{ github.ref }}
+  group: mykeys-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -28,12 +28,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24.14.1
+          package-manager-cache: false
 
       - name: Enable pnpm
         run: |
