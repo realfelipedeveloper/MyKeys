@@ -57,3 +57,5 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
 - 2026-08-12: `workflow_dispatch` pode passar sem aparecer no resumo do PR; a
   automação deve publicar um commit status `validate workspace` apontando para o
   run aprovado para satisfazer o ruleset sem fingir validação.
+- 2026-08-12: Documentos legados que mencionem `develop` devem ser atualizados
+  para o fluxo atual `development -> homologation -> main`.
