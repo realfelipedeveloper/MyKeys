@@ -32,6 +32,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
 - Criar branches remotas `development` e `homologation`.
 - Ajustar branch padrão do repositório para `development`.
 - Adotar fluxo `feature/* -> development -> homologation -> main`.
+- Registrar que toda tarefa deve receber texto de PR e texto de merge para
+  `development`, `homologation` e `main`.
 - Criar CI inicial com GitHub Actions e gates locais existentes.
 - Não implementar deploy automático nesta task.
 
@@ -53,6 +55,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
 Branches `development` e `homologation` foram criadas. O repositório passou a
 usar `development` como branch padrão. O workflow de CI inicial foi adicionado
 com validações de lint, typecheck, testes, build, audit, Nx e Compose.
+O fluxo também passou a exigir textos de PR e merge para cada etapa de promoção
+até `main`.
 
 ## Verificações de segurança
 

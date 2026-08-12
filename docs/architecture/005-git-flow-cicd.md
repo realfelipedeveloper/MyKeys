@@ -26,6 +26,12 @@ feature/* -> development -> homologation -> main
 Branches `feature/*` devem partir de `development`. Promoções entre ambientes
 devem ser feitas por PR.
 
+Cada tarefa deve receber texto de PR e texto de merge em português para:
+
+- `feature/*` -> `development`;
+- `development` -> `homologation`;
+- `homologation` -> `main`.
+
 ## CI inicial
 
 O workflow `.github/workflows/ci.yml` roda em PRs e pushes para:

@@ -29,6 +29,13 @@ Criar as branches remotas:
 
 Ajustar a branch padrão do repositório para `development`.
 
+Para cada tarefa, encaminhar texto de PR e texto de merge em português em cada
+etapa de promoção:
+
+- `feature/*` -> `development`;
+- `development` -> `homologation`;
+- `homologation` -> `main`.
+
 Criar `.github/workflows/ci.yml` com validação inicial:
 
 - `pnpm install --frozen-lockfile`;
@@ -56,6 +63,7 @@ workflow.
 
 - Novos PRs de feature passam a mirar `development` por padrão.
 - A promoção de código antes de `main` fica explícita e auditável.
+- Cada etapa de promoção passa a ter texto de PR e texto de merge padronizados.
 - O CI inicial passa a executar os gates locais ja existentes.
 - O workflow usa permissões mínimas e não consome secrets.
 

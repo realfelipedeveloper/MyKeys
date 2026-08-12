@@ -28,6 +28,9 @@
 - 2026-08-12: O repositório deve usar `development` como branch padrão de
   trabalho, promovendo mudanças por PR em `development -> homologation -> main`;
   PRs de feature direto para `main` escondem o fluxo esperado.
+- 2026-08-12: Cada tarefa deve receber texto de PR e texto de merge para
+  `feature/* -> development`, `development -> homologation` e
+  `homologation -> main`, sempre em português.
 - 2026-08-12: A primeira inclusão de workflow GitHub Actions precisa ser
   promovida pelas branches de ambiente; os checks ficam visíveis de forma
   consistente depois que o workflow existir na branch base do PR.

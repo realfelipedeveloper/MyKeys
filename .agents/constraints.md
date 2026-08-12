@@ -13,3 +13,6 @@
 - Não abrir PR de feature diretamente para `main`.
 - Textos de pull request e merge devem ser enviados sempre em português, com
   resumo, validações, impacto e riscos quando aplicável.
+- Para cada tarefa, enviar texto de PR e texto de merge para cada etapa:
+  `feature/*` -> `development`, `development` -> `homologation` e
+  `homologation` -> `main`.

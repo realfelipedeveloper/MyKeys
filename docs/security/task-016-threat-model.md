@@ -14,7 +14,7 @@ nesta tarefa.
 | ---------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | Spoofing               | PRs podem mirar branch errada e burlar o fluxo.               | `development` vira branch padrão e o fluxo é documentado.               |
 | Tampering              | Workflow pode deixar de executar gates obrigatórios.          | `tools/check-ci.mjs` valida comandos obrigatórios do CI.                |
-| Repudiation            | Promoções podem ficar sem rastreio claro.                     | Promoções devem ocorrer por PR com texto de merge em português.         |
+| Repudiation            | Promoções podem ficar sem rastreio claro.                     | Cada etapa exige PR e merge com textos em português.                    |
 | Information disclosure | Workflow pode expor secrets por engano.                       | CI usa `contents: read` e não referencia `secrets.*`.                   |
 | Denial of service      | CI pode ficar lento ou bloquear merges por falha operacional. | Pipeline inicial reutiliza gates locais e tem timeout definido.         |
 | Elevation of privilege | `pull_request_target` poderia executar código não confiável.  | Workflow usa `pull_request` e validador bloqueia `pull_request_target`. |

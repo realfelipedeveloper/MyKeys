@@ -56,6 +56,9 @@ Sem commits diretos em `development`, `homologation` ou `main`.
 Mensagens de commit devem ser escritas sempre em português.
 Textos de pull request e merge devem ser encaminhados sempre em português,
 com resumo, validações, impacto e riscos quando aplicável.
+Para cada tarefa, devem ser encaminhados texto de PR e texto de merge para
+`feature/*` -> `development`, `development` -> `homologation` e
+`homologation` -> `main`.
 
 ## Definição de pronto
 
