@@ -45,6 +45,12 @@ infraestrutura, criando branches intermediárias e um CI inicial.
   GitHub Actions.
 - Disparar `MyKeys CI` pela automação após criar ou detectar PR com mudanças
   pendentes.
+- Separar a concorrência do CI por tipo de evento para evitar cancelamento entre
+  `push` e `workflow_dispatch`.
+- Publicar o commit status `validate workspace` somente após o CI disparado pela
+  automação passar.
+- Ajustar o ruleset remoto para exigir `validate workspace` sem política estrita
+  de branch atualizada antes do merge.
 - Não implementar deploy automático nesta task.
 
 ## Testes executados
@@ -59,7 +65,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
 - `pnpm audit --audit-level high`;
 - `pnpm nx show projects`;
 - `docker compose --env-file .env.example -f compose.yaml config --format json`;
-- verificação de branches remotas.
+- verificação de branches remotas;
+- verificação do ruleset remoto `MyKeys Git Flow protections`.
 
 ## Resultados
 
@@ -71,12 +78,20 @@ até `main`.
 O workflow `MyKeys Promotions` abre automaticamente PRs de feature e o próximo
 PR de promoção quando `feature/*`, `development` ou `homologation` recebem
 novos commits.
+O CI separa a concorrência por evento para que validações manuais disparadas
+pela automação não cancelem validações de `push`. O ruleset remoto exige o
+check `validate workspace`, mas mantém desabilitada a política estrita de
+branch atualizada para preservar o fluxo de promoção.
+Quando o CI manual passa, a automação publica o commit status obrigatório no SHA
+promovido e aponta para o run real do GitHub Actions.
 
 ## Verificações de segurança
 
 - Workflow usa permissões mínimas `contents: read`.
 - Workflow de promoção usa `pull-requests: write` somente para abrir PRs.
 - Workflow de promoção usa `actions: write` para disparar `MyKeys CI`.
+- Workflow de promoção usa `statuses: write` somente para publicar o resultado
+  aprovado do CI como status obrigatório.
 - Workflow de promoção não faz aprovação, merge ou push.
 - Workflow não usa `pull_request_target`.
 - CI baseline não referencia `secrets.*`.
@@ -86,6 +101,8 @@ novos commits.
 - Actions utilizadas são oficiais e usam runtime Node 24:
   `actions/checkout@v5` e `actions/setup-node@v5`.
 - Cache automático do `setup-node` permanece desabilitado.
+- Ruleset remoto mantém PR obrigatório, bloqueio de deleção, bloqueio de
+  force push e status check obrigatório.
 
 ## Riscos residuais
 
@@ -97,6 +114,8 @@ novos commits.
   GitHub.
 - A permissão de Actions para criar PRs também habilita aprovação por Actions na
   configuração do GitHub; o workflow é validado para não executar aprovação.
+- Alterações manuais futuras no ruleset podem reintroduzir exigência estrita de
+  branch atualizada e bloquear PRs de promoção.
 
 ## Rollback
 
