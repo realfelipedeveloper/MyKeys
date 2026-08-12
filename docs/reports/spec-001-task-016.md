@@ -12,7 +12,9 @@ infraestrutura, criando branches intermediárias e um CI inicial.
 ## Arquivos alterados
 
 - `.github/workflows/ci.yml`;
+- `.github/workflows/promotions.yml`;
 - `tools/check-ci.mjs`;
+- `tools/check-promotions.mjs`;
 - `tools/check-workspace.mjs`;
 - `package.json`;
 - `nx.json`;
@@ -35,11 +37,14 @@ infraestrutura, criando branches intermediárias e um CI inicial.
 - Registrar que toda tarefa deve receber texto de PR e texto de merge para
   `development`, `homologation` e `main`.
 - Criar CI inicial com GitHub Actions e gates locais existentes.
+- Criar automação para abrir PR de `development` para `homologation` e de
+  `homologation` para `main` após merges.
 - Não implementar deploy automático nesta task.
 
 ## Testes executados
 
 - `pnpm check:ci`;
+- `pnpm check:promotions`;
 - `pnpm check:workspace`;
 - `pnpm lint`;
 - `pnpm typecheck`;
@@ -57,12 +62,17 @@ usar `development` como branch padrão. O workflow de CI inicial foi adicionado
 com validações de lint, typecheck, testes, build, audit, Nx e Compose.
 O fluxo também passou a exigir textos de PR e merge para cada etapa de promoção
 até `main`.
+O workflow `MyKeys Promotions` abre automaticamente o próximo PR de promoção
+quando `development` ou `homologation` recebem novos commits.
 
 ## Verificações de segurança
 
 - Workflow usa permissões mínimas `contents: read`.
+- Workflow de promoção usa `pull-requests: write` somente para abrir PRs.
 - Workflow não usa `pull_request_target`.
-- Workflow não referencia `secrets.*`.
+- CI baseline não referencia `secrets.*`.
+- `MYKEYS_AUTOMATION_TOKEN` é opcional para reduzir fricção dos checks em PRs
+  criados por automação.
 - Nenhuma dependência npm nova foi adicionada.
 - Actions utilizadas são oficiais: `actions/checkout` e `actions/setup-node`.
 
@@ -72,6 +82,8 @@ até `main`.
   nas branches de base.
 - CD real permanece fora de escopo.
 - A primeira promoção do workflow é uma etapa de bootstrap.
+- PRs criados com `GITHUB_TOKEN` podem exigir aprovação manual dos checks pelo
+  GitHub.
 
 ## Rollback
 

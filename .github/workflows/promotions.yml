@@ -1,0 +1,165 @@
+name: MyKeys Promotions
+
+on:
+  push:
+    branches:
+      - development
+      - homologation
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: Branch de origem da promoção
+        required: true
+        type: choice
+        options:
+          - development
+          - homologation
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: mykeys-promotions-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  open-promotion-pr:
+    name: open promotion pull request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      GH_TOKEN: ${{ secrets.MYKEYS_AUTOMATION_TOKEN || github.token }}
+      GH_REPO: ${{ github.repository }}
+
+    steps:
+      - name: Determine promotion target
+        id: promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            SOURCE_BRANCH="${{ inputs.source_branch }}"
+          else
+            SOURCE_BRANCH="${GITHUB_REF_NAME}"
+          fi
+
+          case "$SOURCE_BRANCH" in
+            development)
+              TARGET_BRANCH="homologation"
+              TITLE="Promover mudanças de development para homologation"
+              ;;
+            homologation)
+              TARGET_BRANCH="main"
+              TITLE="Promover mudanças de homologation para main"
+              ;;
+            *)
+              echo "Sem destino de promoção para ${SOURCE_BRANCH}."
+              echo "should_promote=false" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+
+          echo "source_branch=${SOURCE_BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "target_branch=${TARGET_BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "title=${TITLE}" >> "$GITHUB_OUTPUT"
+          echo "should_promote=true" >> "$GITHUB_OUTPUT"
+
+      - name: Check pending changes
+        if: steps.promotion.outputs.should_promote == 'true'
+        id: diff
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCE="${{ steps.promotion.outputs.source_branch }}"
+          TARGET="${{ steps.promotion.outputs.target_branch }}"
+          AHEAD_BY="$(gh api "repos/${GH_REPO}/compare/${TARGET}...${SOURCE}" --jq '.ahead_by')"
+
+          echo "ahead_by=${AHEAD_BY}" >> "$GITHUB_OUTPUT"
+
+          if [[ "$AHEAD_BY" == "0" ]]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "Sem mudanças para promover de ${SOURCE} para ${TARGET}."
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check existing promotion pull request
+        if: steps.diff.outputs.has_changes == 'true'
+        id: existing
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCE="${{ steps.promotion.outputs.source_branch }}"
+          TARGET="${{ steps.promotion.outputs.target_branch }}"
+          PR_URL="$(gh pr list \
+            --repo "${GH_REPO}" \
+            --head "${SOURCE}" \
+            --base "${TARGET}" \
+            --state open \
+            --json url \
+            --jq '.[0].url // ""')"
+
+          if [[ -n "$PR_URL" ]]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "url=${PR_URL}" >> "$GITHUB_OUTPUT"
+            echo "PR de promoção já existe: ${PR_URL}"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build promotion pull request body
+        if: steps.diff.outputs.has_changes == 'true' && steps.existing.outputs.exists == 'false'
+        id: body
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCE="${{ steps.promotion.outputs.source_branch }}"
+          TARGET="${{ steps.promotion.outputs.target_branch }}"
+          COMPARE_URL="https://github.com/${GH_REPO}/compare/${TARGET}...${SOURCE}"
+          BODY_FILE="${RUNNER_TEMP}/promotion-body.md"
+
+          cat > "$BODY_FILE" <<BODY
+          ## Resumo
+
+          Promove automaticamente as mudanças de \`${SOURCE}\` para \`${TARGET}\` conforme o Git Flow do MyKeys.
+
+          ## Origem
+
+          - Branch origem: \`${SOURCE}\`
+          - Branch destino: \`${TARGET}\`
+          - Comparação: ${COMPARE_URL}
+
+          ## Validações esperadas
+
+          - GitHub Actions: \`validate workspace\`
+          - Ruleset: \`MyKeys Git Flow protections\`
+
+          ## Impacto
+
+          Mantém a sequência obrigatória \`feature/* -> development -> homologation -> main\` sem depender da abertura manual do PR de promoção.
+
+          ## Riscos
+
+          Esta automação abre o PR de promoção, mas o merge continua dependendo dos checks obrigatórios e da revisão humana quando aplicável.
+          BODY
+
+          echo "path=${BODY_FILE}" >> "$GITHUB_OUTPUT"
+
+      - name: Create promotion pull request
+        if: steps.diff.outputs.has_changes == 'true' && steps.existing.outputs.exists == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gh pr create \
+            --repo "${GH_REPO}" \
+            --head "${{ steps.promotion.outputs.source_branch }}" \
+            --base "${{ steps.promotion.outputs.target_branch }}" \
+            --title "${{ steps.promotion.outputs.title }}" \
+            --body-file "${{ steps.body.outputs.path }}"

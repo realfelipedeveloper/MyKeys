@@ -22,6 +22,7 @@ const prettierIgnore = await readFile(".prettierignore", "utf8");
 const composeYaml = await readFile("compose.yaml", "utf8");
 const envExample = await readFile(".env.example", "utf8");
 const ciWorkflow = await readFile(".github/workflows/ci.yml", "utf8");
+const promotionsWorkflow = await readFile(".github/workflows/promotions.yml", "utf8");
 
 const expectedDevDependencies = {
   "@eslint/js": "10.0.1",
@@ -57,9 +58,11 @@ assert.match(
 );
 assert.match(packageJson.scripts?.["check:compose"] ?? "", /node tools\/check-compose\.mjs/);
 assert.match(packageJson.scripts?.["check:ci"] ?? "", /node tools\/check-ci\.mjs/);
+assert.match(packageJson.scripts?.["check:promotions"] ?? "", /node tools\/check-promotions\.mjs/);
 assert.match(packageJson.scripts?.lint ?? "", /pnpm format:check/);
 assert.match(packageJson.scripts?.lint ?? "", /pnpm check:compose/);
 assert.match(packageJson.scripts?.lint ?? "", /pnpm check:ci/);
+assert.match(packageJson.scripts?.lint ?? "", /pnpm check:promotions/);
 assert.match(packageJson.scripts?.lint ?? "", /pnpm lint:tooling/);
 
 assert.equal(nxJson.workspaceLayout?.appsDir, "apps");
@@ -112,7 +115,18 @@ assert.match(envExample, /^MYKEYS_REDIS_PORT=43140$/m);
 assert.match(ciWorkflow, /pull_request:\s+branches:\s+- development\s+- homologation\s+- main/s);
 assert.match(ciWorkflow, /push:\s+branches:\s+- development\s+- homologation\s+- main/s);
 assert.match(ciWorkflow, /pnpm install --frozen-lockfile/);
+assert.match(ciWorkflow, /pnpm check:promotions/);
 assert.match(ciWorkflow, /pnpm audit --audit-level high/);
+assert.match(
+  promotionsWorkflow,
+  /push:\s+branches:\s+- development\s+- homologation/s,
+  "promotion workflow must run after development and homologation updates",
+);
+assert.match(
+  promotionsWorkflow,
+  /pull-requests: write/,
+  "promotion workflow must be allowed to open pull requests",
+);
 
 for (const packageName of mykeysPackageNames) {
   assert.deepEqual(

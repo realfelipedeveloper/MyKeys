@@ -38,7 +38,8 @@
     "Docker Compose v2.39.2",
     "GitHub Actions",
     "actions/checkout@v4",
-    "actions/setup-node@v4"
+    "actions/setup-node@v4",
+    "GitHub CLI in GitHub Actions"
   ],
   "risks": [
     "port conflicts",
@@ -60,7 +61,9 @@
     "host port collision for local infrastructure",
     "feature PR targeting main directly",
     "CI workflow drift",
-    "promotion branch drift"
+    "promotion branch drift",
+    "duplicate promotion pull requests",
+    "GITHUB_TOKEN approval gate for automation-created pull requests"
   ],
   "requiredTests": [
     "unit",
@@ -77,7 +80,8 @@
     "compose-config",
     "compose-namespace-validation",
     "ci-workflow-config",
-    "git-flow-branch-validation"
+    "git-flow-branch-validation",
+    "promotion-workflow-config"
   ],
   "requiredDocs": [
     "README",

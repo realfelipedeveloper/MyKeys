@@ -10,6 +10,7 @@ for (const branch of ["development", "homologation", "main"]) {
 
 for (const command of [
   "pnpm install --frozen-lockfile",
+  "pnpm check:promotions",
   "pnpm lint",
   "pnpm typecheck",
   "pnpm test",

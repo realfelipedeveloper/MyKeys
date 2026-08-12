@@ -59,6 +59,10 @@ com resumo, validações, impacto e riscos quando aplicável.
 Para cada tarefa, devem ser encaminhados texto de PR e texto de merge para
 `feature/*` -> `development`, `development` -> `homologation` e
 `homologation` -> `main`.
+Após merge em `development`, a automação deve abrir PR de promoção para
+`homologation`. Após merge em `homologation`, a automação deve abrir PR de
+promoção para `main`. O merge de cada promoção permanece manual e protegido por
+checks.
 
 ## Definição de pronto
 

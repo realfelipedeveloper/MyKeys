@@ -34,3 +34,7 @@
 - 2026-08-12: A primeira inclusão de workflow GitHub Actions precisa ser
   promovida pelas branches de ambiente; os checks ficam visíveis de forma
   consistente depois que o workflow existir na branch base do PR.
+- 2026-08-12: Abertura automática de PRs de promoção deve ser feita por
+  workflow em `push` para `development` e `homologation`, evitando duplicatas e
+  mantendo merge manual. PRs criados com `GITHUB_TOKEN` podem exigir aprovação
+  manual dos checks; `MYKEYS_AUTOMATION_TOKEN` fica reservado como alternativa.

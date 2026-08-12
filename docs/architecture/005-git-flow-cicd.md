@@ -26,6 +26,15 @@ feature/* -> development -> homologation -> main
 Branches `feature/*` devem partir de `development`. Promoções entre ambientes
 devem ser feitas por PR.
 
+O workflow `.github/workflows/promotions.yml` automatiza a abertura dos PRs de
+promoção:
+
+- push/merge em `development` abre PR para `homologation`;
+- push/merge em `homologation` abre PR para `main`.
+
+A automação compara origem e destino, não cria PR duplicado e não executa merge
+automaticamente.
+
 Cada tarefa deve receber texto de PR e texto de merge em português para:
 
 - `feature/*` -> `development`;
@@ -44,6 +53,7 @@ O job `validate workspace` executa:
 
 - instalação com lockfile congelado;
 - validação Docker Compose;
+- validação da automação de promoções;
 - lint;
 - typecheck;
 - testes;

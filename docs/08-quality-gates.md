@@ -12,6 +12,7 @@
 - migration validation;
 - contract validation;
 - dependency review.
+- validação de automação de CI e promoções.
 
 ## Cobertura
 

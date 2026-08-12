@@ -39,6 +39,7 @@ etapa de promoção:
 Criar `.github/workflows/ci.yml` com validação inicial:
 
 - `pnpm install --frozen-lockfile`;
+- `pnpm check:promotions`;
 - `pnpm lint`;
 - `pnpm typecheck`;
 - `pnpm test`;
@@ -49,6 +50,18 @@ Criar `.github/workflows/ci.yml` com validação inicial:
 
 Adicionar `tools/check-ci.mjs` para validar localmente a configuração do
 workflow.
+
+Criar `.github/workflows/promotions.yml` para abrir automaticamente o próximo
+PR de promoção após atualizações em `development` ou `homologation`.
+
+Adicionar `tools/check-promotions.mjs` para validar que a automação:
+
+- promove `development` para `homologation`;
+- promove `homologation` para `main`;
+- verifica diferenças antes de abrir PR;
+- evita PR duplicado;
+- não usa `pull_request_target`;
+- não faz merge automático nem push.
 
 ## Alternativas
 
@@ -64,8 +77,12 @@ workflow.
 - Novos PRs de feature passam a mirar `development` por padrão.
 - A promoção de código antes de `main` fica explícita e auditável.
 - Cada etapa de promoção passa a ter texto de PR e texto de merge padronizados.
+- PRs de promoção passam a ser abertos automaticamente após merge da etapa
+  anterior.
 - O CI inicial passa a executar os gates locais ja existentes.
-- O workflow usa permissões mínimas e não consome secrets.
+- O CI baseline usa permissões mínimas e não consome secrets.
+- A automação de promoção usa permissões mínimas e aceita apenas o secret
+  opcional `MYKEYS_AUTOMATION_TOKEN`.
 
 ## Consequências negativas
 
@@ -73,6 +90,9 @@ workflow.
 - A primeira promoção do workflow pelas branches de ambiente é uma etapa de
   bootstrap; os checks ficam plenamente consistentes depois que o workflow
   existir na branch base.
+- PRs criados pelo `GITHUB_TOKEN` podem exigir aprovação manual dos checks pelo
+  GitHub; um token opcional `MYKEYS_AUTOMATION_TOKEN` remove essa fricção quando
+  configurado.
 
 ## Riscos
 
