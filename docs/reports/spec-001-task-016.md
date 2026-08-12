@@ -41,6 +41,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
   branch de feature.
 - Criar automação para abrir PR de `development` para `homologation` e de
   `homologation` para `main` após merges.
+- Habilitar no repositório permissão de workflow para criação de PRs pelo
+  GitHub Actions.
 - Não implementar deploy automático nesta task.
 
 ## Testes executados
@@ -72,6 +74,7 @@ novos commits.
 
 - Workflow usa permissões mínimas `contents: read`.
 - Workflow de promoção usa `pull-requests: write` somente para abrir PRs.
+- Workflow de promoção não faz aprovação, merge ou push.
 - Workflow não usa `pull_request_target`.
 - CI baseline não referencia `secrets.*`.
 - `MYKEYS_AUTOMATION_TOKEN` é opcional para reduzir fricção dos checks em PRs
@@ -87,6 +90,8 @@ novos commits.
 - A primeira promoção do workflow é uma etapa de bootstrap.
 - PRs criados com `GITHUB_TOKEN` podem exigir aprovação manual dos checks pelo
   GitHub.
+- A permissão de Actions para criar PRs também habilita aprovação por Actions na
+  configuração do GitHub; o workflow é validado para não executar aprovação.
 
 ## Rollback
 

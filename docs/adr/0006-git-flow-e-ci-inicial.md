@@ -65,7 +65,12 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - verifica diferenças antes de abrir PR;
 - evita PR duplicado;
 - não usa `pull_request_target`;
-- não faz merge automático nem push.
+- não faz merge automático, aprovação automática nem push.
+
+Habilitar no repositório `Workflow permissions: Read and write` e `Allow GitHub
+Actions to create and approve pull requests`, necessário para que `GITHUB_TOKEN`
+possa abrir PRs automaticamente. Os workflows permanecem com permissões
+explícitas e mínimas.
 
 ## Alternativas
 
@@ -87,6 +92,8 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - O CI baseline usa permissões mínimas e não consome secrets.
 - A automação de promoção usa permissões mínimas e aceita apenas o secret
   opcional `MYKEYS_AUTOMATION_TOKEN`.
+- O validador bloqueia uso de `gh pr review`, `gh pr merge` e `git push` na
+  automação de PRs.
 
 ## Consequências negativas
 
@@ -97,6 +104,9 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - PRs criados pelo `GITHUB_TOKEN` podem exigir aprovação manual dos checks pelo
   GitHub; um token opcional `MYKEYS_AUTOMATION_TOKEN` remove essa fricção quando
   configurado.
+- A configuração do GitHub Actions que permite criar PRs também permite aprovar
+  PRs; isso deve permanecer mitigado por validação do workflow e revisão de
+  mudanças nessa automação.
 
 ## Riscos
 

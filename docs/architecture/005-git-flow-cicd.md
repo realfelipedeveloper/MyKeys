@@ -36,6 +36,11 @@ promoção:
 A automação compara origem e destino, não cria PR duplicado e não executa merge
 automaticamente.
 
+Para permitir criação automática de PR com `GITHUB_TOKEN`, o repositório deve
+manter `Workflow permissions` em `Read and write` e permitir que GitHub Actions
+crie pull requests. Os workflows continuam declarando permissões mínimas por
+arquivo.
+
 Cada tarefa deve receber texto de PR e texto de merge em português para:
 
 - `feature/*` -> `development`;

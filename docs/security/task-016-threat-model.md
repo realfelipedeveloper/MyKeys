@@ -21,6 +21,7 @@ manual dos checks em PRs criados por automação.
 | Information disclosure | Workflow pode expor secrets por engano.                       | CI usa `contents: read`; token de promoção é opcional e limitado a PRs.    |
 | Denial of service      | CI pode ficar lento ou bloquear merges por falha operacional. | Pipeline inicial reutiliza gates locais e tem timeout definido.            |
 | Elevation of privilege | `pull_request_target` poderia executar código não confiável.  | Workflows não usam `pull_request_target` e validadores bloqueiam esse uso. |
+| Elevation of privilege | Actions podem aprovar PRs se o workflow for alterado.         | Validador bloqueia `gh pr review`, merge automático e push.                |
 
 ## Abuse cases
 
@@ -32,6 +33,7 @@ manual dos checks em PRs criados por automação.
 - Criar PR duplicado de promoção: bloqueado por consulta prévia via `gh pr
 list`.
 - Fazer merge automático indevido: bloqueado por `tools/check-promotions.mjs`.
+- Aprovar PR por automação: bloqueado por `tools/check-promotions.mjs`.
 - Usar action com permissão excessiva: mitigado por `permissions: contents:
 read`.
 
@@ -42,3 +44,6 @@ read`.
 - O pipeline ainda é CI; CD real depende de ambientes e serviços futuros.
 - Sem `MYKEYS_AUTOMATION_TOKEN`, PRs criados por automação podem exigir
   aprovação manual dos checks pelo GitHub.
+- A configuração do GitHub não separa criação e aprovação de PRs por Actions;
+  alterações futuras no workflow de promoção devem manter a proibição de
+  aprovação automática.

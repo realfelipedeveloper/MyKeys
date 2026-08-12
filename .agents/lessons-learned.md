@@ -41,3 +41,7 @@
 - 2026-08-12: A automação completa de Git Flow também precisa ouvir `push` em
   `feature/**` para abrir PR automaticamente para `development`; proteger só as
   branches de promoção não cobre o início do fluxo.
+- 2026-08-12: Para `GITHUB_TOKEN` abrir PRs, o repositório precisa de
+  `Workflow permissions: Read and write` e `Allow GitHub Actions to create and
+approve pull requests`; como a permissão também habilita aprovação, o workflow
+  deve bloquear `gh pr review` em validação local.

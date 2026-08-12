@@ -64,7 +64,8 @@
     "promotion branch drift",
     "feature pull request automation drift",
     "duplicate promotion pull requests",
-    "GITHUB_TOKEN approval gate for automation-created pull requests"
+    "GITHUB_TOKEN approval gate for automation-created pull requests",
+    "GitHub Actions pull request approval permission overreach"
   ],
   "requiredTests": [
     "unit",
