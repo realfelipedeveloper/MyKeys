@@ -49,11 +49,19 @@ feature/* -> development -> homologation -> main
   após merge em `development` ou `homologation`.
 - A automação dispara o workflow `MyKeys CI` após abrir ou atualizar a
   necessidade de promoção.
+- O CI separa a concorrência por evento (`push`, `pull_request` e
+  `workflow_dispatch`) para que uma validação manual disparada pela automação
+  não cancele a validação de `push` exigida pelo ruleset.
 - A automação não faz merge, não faz push e não cria PR duplicado.
 - A automação não aprova PRs.
 - O repositório deve manter `Workflow permissions` em `Read and write` e
   `Allow GitHub Actions to create and approve pull requests` habilitado para que
   o `GITHUB_TOKEN` consiga abrir PRs automaticamente.
+- O ruleset `MyKeys Git Flow protections` deve exigir PR e o status check
+  `validate workspace`, mas não deve exigir política estrita de branch
+  atualizada antes do merge. No fluxo de promoção, `homologation` e `main`
+  acumulam commits de merge próprios, então a exigência estrita gera bloqueio
+  falso mesmo quando a comparação de conteúdo é válida.
 - Se o PR automático for criado com `GITHUB_TOKEN`, o GitHub pode exigir
   aprovação manual para executar checks. O workflow também dispara `MyKeys CI`
   via `workflow_dispatch` para reduzir essa fricção. Para execução sem

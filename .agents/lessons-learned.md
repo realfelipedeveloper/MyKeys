@@ -48,3 +48,9 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
 - 2026-08-12: PR criado por `GITHUB_TOKEN` pode não disparar `pull_request` CI;
   o workflow de abertura automática deve chamar `gh workflow run "MyKeys CI"` na
   branch de origem para materializar a validação.
+- 2026-08-12: O CI precisa separar concorrência por `github.event_name`; caso
+  contrário, uma validação `workflow_dispatch` pode cancelar a validação de
+  `push` exigida pelo ruleset.
+- 2026-08-12: Ruleset de promoção deve exigir o check `validate workspace`, mas
+  sem política estrita de branch atualizada, porque `homologation` e `main`
+  acumulam commits de merge próprios durante o Git Flow.

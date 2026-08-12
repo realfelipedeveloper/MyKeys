@@ -35,9 +35,19 @@ assert.match(
   /package-manager-cache: false/,
   "CI must disable setup-node automatic package-manager cache",
 );
+assert.match(
+  workflow,
+  /group:\s+mykeys-ci-\$\{\{ github\.workflow \}\}-\$\{\{ github\.event_name \}\}-\$\{\{ github\.ref \}\}/,
+  "CI concurrency must separate push, pull_request and workflow_dispatch runs",
+);
 assert.match(workflow, /corepack prepare pnpm@11\.20\.0 --activate/, "CI must pin pnpm");
 assert.doesNotMatch(workflow, /actions\/checkout@v4/, "CI must not use Node 20 checkout");
 assert.doesNotMatch(workflow, /actions\/setup-node@v4/, "CI must not use Node 20 setup-node");
+assert.doesNotMatch(
+  workflow,
+  /group:\s+mykeys-ci-\$\{\{ github\.workflow \}\}-\$\{\{ github\.ref \}\}/,
+  "CI workflow_dispatch runs must not cancel push validations",
+);
 assert.doesNotMatch(workflow, /pull_request_target/, "CI must not use pull_request_target");
 assert.doesNotMatch(workflow, /secrets\./, "CI must not consume secrets in the baseline pipeline");
 

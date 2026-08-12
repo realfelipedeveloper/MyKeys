@@ -40,6 +40,8 @@ Criar `.github/workflows/ci.yml` com validação inicial:
 
 - `actions/checkout@v5`;
 - `actions/setup-node@v5` com Node.js `24.14.1`;
+- concorrência separada por evento para impedir que `workflow_dispatch` cancele
+  checks de `push`;
 - `pnpm install --frozen-lockfile`;
 - `pnpm check:promotions`;
 - `pnpm lint`;
@@ -75,6 +77,12 @@ Actions to create and approve pull requests`, necessário para que `GITHUB_TOKEN
 possa abrir PRs automaticamente. Os workflows permanecem com permissões
 explícitas e mínimas.
 
+Configurar o ruleset `MyKeys Git Flow protections` para exigir PR e o status
+check `validate workspace` em `development`, `homologation` e `main`, sem
+política estrita de branch atualizada antes do merge. As branches de promoção
+podem conter commits de merge próprios, então a exigência estrita cria bloqueio
+falso para o fluxo `development -> homologation -> main`.
+
 ## Alternativas
 
 - Manter PRs direto para `main`: rejeitado porque ignora as etapas de
@@ -101,6 +109,10 @@ explícitas e mínimas.
   `GITHUB_TOKEN`.
 - O CI usa actions oficiais em runtime Node 24 e desabilita cache automático do
   `setup-node`.
+- A concorrência do CI não cancela validações de `push` quando a automação
+  dispara `workflow_dispatch`.
+- O ruleset exige o check obrigatório sem bloquear promoções por divergência
+  esperada de commits de merge.
 
 ## Consequências negativas
 
@@ -114,12 +126,17 @@ explícitas e mínimas.
 - A configuração do GitHub Actions que permite criar PRs também permite aprovar
   PRs; isso deve permanecer mitigado por validação do workflow e revisão de
   mudanças nessa automação.
+- A política de status check sem atualização estrita permite merge de promoção
+  quando o check obrigatório passa, mesmo que a branch base tenha commits de
+  merge próprios.
 
 ## Riscos
 
 - Branches de ambiente podem divergir se promoções forem puladas.
 - Regras de proteção do GitHub ainda precisam ser endurecidas quando os checks
   estiverem estabilizados.
+- O ruleset remoto pode divergir do repositório se for alterado manualmente no
+  GitHub.
 - O CI inicial nao faz deploy; CD real permanece fora de escopo ate haver
   ambientes e serviços deployáveis.
 

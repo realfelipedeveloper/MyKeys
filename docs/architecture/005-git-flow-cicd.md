@@ -45,6 +45,16 @@ Após abrir ou detectar um PR de promoção com mudanças pendentes, a automaç�
 dispara `MyKeys CI` por `workflow_dispatch` na branch de origem para garantir
 validação mesmo quando o PR foi criado pelo `GITHUB_TOKEN`.
 
+O CI usa concorrência separada por `github.event_name`, evitando que a validação
+manual por `workflow_dispatch` cancele a validação de `push` que também pode ser
+exigida pelo ruleset.
+
+O ruleset remoto `MyKeys Git Flow protections` protege `development`,
+`homologation` e `main`, exige PR, bloqueia deleção e force push, e exige o
+check `validate workspace`. A política estrita de branch atualizada permanece
+desabilitada para não bloquear PRs de promoção por divergência esperada de
+commits de merge entre as branches de ambiente.
+
 Cada tarefa deve receber texto de PR e texto de merge em português para:
 
 - `feature/*` -> `development`;
