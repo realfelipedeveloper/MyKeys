@@ -82,6 +82,11 @@ assert.match(
 );
 assert.match(
   workflow,
+  /gh api -X GET "repos\/\$\{GH_REPO\}\/actions\/workflows\/ci\.yml\/runs"/,
+  "promotion workflow must list validation runs with an explicit GET request",
+);
+assert.match(
+  workflow,
   /gh run watch "\$\{VALIDATION_RUN_ID\}"/,
   "promotion workflow must wait for the validation run to finish",
 );
