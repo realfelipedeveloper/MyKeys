@@ -19,6 +19,8 @@ const tsconfigBase = await readJson("tsconfig.base.json");
 const prettierConfig = await readJson(".prettierrc.json");
 const workspaceYaml = await readFile("pnpm-workspace.yaml", "utf8");
 const prettierIgnore = await readFile(".prettierignore", "utf8");
+const composeYaml = await readFile("compose.yaml", "utf8");
+const envExample = await readFile(".env.example", "utf8");
 
 const expectedDevDependencies = {
   "@eslint/js": "10.0.1",
@@ -52,7 +54,9 @@ assert.match(
   packageJson.scripts?.["check:aliases"] ?? "",
   /tsc --noEmit -p tsconfig\.aliases\.json/,
 );
+assert.match(packageJson.scripts?.["check:compose"] ?? "", /node tools\/check-compose\.mjs/);
 assert.match(packageJson.scripts?.lint ?? "", /pnpm format:check/);
+assert.match(packageJson.scripts?.lint ?? "", /pnpm check:compose/);
 assert.match(packageJson.scripts?.lint ?? "", /pnpm lint:tooling/);
 
 assert.equal(nxJson.workspaceLayout?.appsDir, "apps");
@@ -63,6 +67,8 @@ assert.ok(nxJson.targetDefaults?.test?.cache, "test target must be cacheable");
 assert.ok(nxJson.targetDefaults?.typecheck?.cache, "typecheck target must be cacheable");
 
 for (const sharedGlobal of [
+  "{workspaceRoot}/compose.yaml",
+  "{workspaceRoot}/.env.example",
   "{workspaceRoot}/eslint.config.mjs",
   "{workspaceRoot}/tsconfig.base.json",
   "{workspaceRoot}/tsconfig.eslint.json",
@@ -91,6 +97,14 @@ assert.equal(tsconfigBase.compilerOptions?.exactOptionalPropertyTypes, true);
 assert.equal(prettierConfig.printWidth, 100);
 assert.equal(prettierConfig.semi, true);
 assert.match(prettierIgnore, /pnpm-lock\.yaml/);
+assert.match(composeYaml, /^name:\s+\$\{MYKEYS_COMPOSE_PROJECT_NAME:-mykeys\}/m);
+assert.match(composeYaml, /^services:\s+\{\}/m);
+assert.doesNotMatch(composeYaml, /\bcontainer_name\s*:/);
+assert.match(composeYaml, /MYKEYS_DOCKER_NETWORK:-mykeys_private/);
+assert.match(envExample, /^MYKEYS_COMPOSE_PROJECT_NAME=mykeys$/m);
+assert.match(envExample, /^MYKEYS_DOCKER_NETWORK=mykeys_private$/m);
+assert.match(envExample, /^MYKEYS_POSTGRES_PORT=43130$/m);
+assert.match(envExample, /^MYKEYS_REDIS_PORT=43140$/m);
 
 for (const packageName of mykeysPackageNames) {
   assert.deepEqual(

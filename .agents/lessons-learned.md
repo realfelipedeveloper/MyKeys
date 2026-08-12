@@ -20,3 +20,8 @@
 - 2026-08-11: No Windows com `fnm`, `pnpm` pode estar disponivel apenas como
   `pnpm.ps1`; validadores Node que chamam `pnpm exec` precisam usar shell com
   argumentos controlados ou outro wrapper portavel.
+- 2026-08-12: Textos de pull request e merge devem ser enviados sempre em
+  português, com resumo, validações, impacto e riscos quando aplicável.
+- 2026-08-12: `docker compose config --format json` valida um Compose minimo
+  com `services: {}` sem subir containers; isso permite criar o namespace antes
+  dos serviços reais da infra local.

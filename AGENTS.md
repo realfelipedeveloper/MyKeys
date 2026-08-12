@@ -52,6 +52,8 @@ Este arquivo define o comportamento obrigatório de todos os agentes e subagente
 
 Sem commits diretos em `main` ou `develop`.
 Mensagens de commit devem ser escritas sempre em português.
+Textos de pull request e merge devem ser encaminhados sempre em português,
+com resumo, validações, impacto e riscos quando aplicável.
 
 ## Definição de pronto
 

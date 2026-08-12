@@ -11,6 +11,8 @@
       "{workspaceRoot}/package.json",
       "{workspaceRoot}/pnpm-lock.yaml",
       "{workspaceRoot}/nx.json",
+      "{workspaceRoot}/compose.yaml",
+      "{workspaceRoot}/.env.example",
       "{workspaceRoot}/eslint.config.mjs",
       "{workspaceRoot}/tsconfig.base.json",
       "{workspaceRoot}/tsconfig.eslint.json",

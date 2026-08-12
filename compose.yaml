@@ -1,0 +1,10 @@
+name: ${MYKEYS_COMPOSE_PROJECT_NAME:-mykeys}
+
+services: {}
+
+networks:
+  mykeys_private:
+    name: ${MYKEYS_DOCKER_NETWORK:-mykeys_private}
+    labels:
+      br.com.abbatech.project: mykeys
+      br.com.abbatech.namespace: mykeys
