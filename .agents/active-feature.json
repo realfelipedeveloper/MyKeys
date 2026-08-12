@@ -2,7 +2,7 @@
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
   "status": "in_progress",
-  "currentTask": "TASK-005",
+  "currentTask": "TASK-016",
   "updatedAt": "2026-08-12",
   "services": [
     "web",
@@ -35,7 +35,12 @@
     "@types/node@24.13.3",
     "globals@17.9.0",
     "Docker 28.4.0",
-    "Docker Compose v2.39.2"
+    "Docker Compose v2.39.2",
+    "GitHub Actions",
+    "actions/checkout@v5",
+    "actions/setup-node@v5",
+    "GitHub CLI in GitHub Actions",
+    "GitHub commit statuses"
   ],
   "risks": [
     "port conflicts",
@@ -54,7 +59,19 @@
     "temporary minimumReleaseAgeExclude entries for typescript-eslint packages",
     "Docker Compose namespace drift",
     "accidental container_name usage",
-    "host port collision for local infrastructure"
+    "host port collision for local infrastructure",
+    "feature PR targeting main directly",
+    "CI workflow drift",
+    "GitHub Actions Node runtime deprecation",
+    "promotion branch drift",
+    "strict status check policy blocking promotion PRs",
+    "feature pull request automation drift",
+    "duplicate promotion pull requests",
+    "GITHUB_TOKEN approval gate for automation-created pull requests",
+    "GitHub Actions pull request approval permission overreach",
+    "CI not triggered for automation-created pull requests",
+    "CI concurrency collision between push and workflow_dispatch",
+    "workflow_dispatch validation not associated with pull request checks"
   ],
   "requiredTests": [
     "unit",
@@ -68,8 +85,15 @@
     "format-check",
     "alias-smoke",
     "static-analysis",
+    "branch-ruleset-validation",
     "compose-config",
-    "compose-namespace-validation"
+    "compose-namespace-validation",
+    "ci-workflow-config",
+    "ci-concurrency-config",
+    "promotion-status-materialization",
+    "git-flow-branch-validation",
+    "feature-pr-automation-config",
+    "promotion-workflow-config"
   ],
   "requiredDocs": [
     "README",

@@ -8,5 +8,15 @@
 - Não adicionar dependências sem justificativa.
 - Não alterar testes para mascarar falhas.
 - Mensagens de commit devem ser escritas sempre em português.
+- Fluxo Git obrigatório: `feature/*` -> `development` -> `homologation` ->
+  `main`.
+- Não abrir PR de feature diretamente para `main`.
 - Textos de pull request e merge devem ser enviados sempre em português, com
   resumo, validações, impacto e riscos quando aplicável.
+- Para cada tarefa, enviar texto de PR e texto de merge para cada etapa:
+  `feature/*` -> `development`, `development` -> `homologation` e
+  `homologation` -> `main`.
+- Após merge em `development` ou `homologation`, abrir automaticamente o PR da
+  próxima promoção sem executar merge automático.
+- Após push em `feature/*`, abrir automaticamente PR para `development` sem
+  executar merge automático.

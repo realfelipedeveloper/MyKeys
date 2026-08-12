@@ -44,16 +44,27 @@ Este arquivo define o comportamento obrigatório de todos os agentes e subagente
 
 ## Git Flow
 
-- `main`
-- `develop`
-- `feature/*`
-- `release/*`
-- `hotfix/*`
+- `development`: branch padrão para integração contínua de features;
+- `homologation`: branch de estabilização e homologação;
+- `main`: branch estável;
+- `feature/*`: branches de implementação por task;
+- `release/*`: branches futuras de preparação de release;
+- `hotfix/*`: correções urgentes.
 
-Sem commits diretos em `main` ou `develop`.
+Fluxo obrigatório: `feature/*` -> `development` -> `homologation` -> `main`.
+Sem commits diretos em `development`, `homologation` ou `main`.
 Mensagens de commit devem ser escritas sempre em português.
 Textos de pull request e merge devem ser encaminhados sempre em português,
 com resumo, validações, impacto e riscos quando aplicável.
+Para cada tarefa, devem ser encaminhados texto de PR e texto de merge para
+`feature/*` -> `development`, `development` -> `homologation` e
+`homologation` -> `main`.
+Após merge em `development`, a automação deve abrir PR de promoção para
+`homologation`. Após merge em `homologation`, a automação deve abrir PR de
+promoção para `main`. O merge de cada promoção permanece manual e protegido por
+checks.
+Após push em `feature/*`, a automação deve abrir PR para `development` quando
+houver diferenças e ainda não existir PR aberto para a mesma origem e destino.
 
 ## Definição de pronto
 
