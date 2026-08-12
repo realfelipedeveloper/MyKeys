@@ -70,6 +70,9 @@ Configurar Playwright.
 
 Criar pipeline GitHub Actions.
 
+Observação: antecipada após a `TASK-005` para corrigir a governança do Git Flow
+antes da continuidade da infraestrutura local.
+
 ### TASK-017
 
 Adicionar coverage gates.

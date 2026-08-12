@@ -2,7 +2,7 @@
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
   "status": "in_progress",
-  "currentTask": "TASK-005",
+  "currentTask": "TASK-016",
   "updatedAt": "2026-08-12",
   "services": [
     "web",
@@ -35,7 +35,10 @@
     "@types/node@24.13.3",
     "globals@17.9.0",
     "Docker 28.4.0",
-    "Docker Compose v2.39.2"
+    "Docker Compose v2.39.2",
+    "GitHub Actions",
+    "actions/checkout@v4",
+    "actions/setup-node@v4"
   ],
   "risks": [
     "port conflicts",
@@ -54,7 +57,10 @@
     "temporary minimumReleaseAgeExclude entries for typescript-eslint packages",
     "Docker Compose namespace drift",
     "accidental container_name usage",
-    "host port collision for local infrastructure"
+    "host port collision for local infrastructure",
+    "feature PR targeting main directly",
+    "CI workflow drift",
+    "promotion branch drift"
   ],
   "requiredTests": [
     "unit",
@@ -69,7 +75,9 @@
     "alias-smoke",
     "static-analysis",
     "compose-config",
-    "compose-namespace-validation"
+    "compose-namespace-validation",
+    "ci-workflow-config",
+    "git-flow-branch-validation"
   ],
   "requiredDocs": [
     "README",

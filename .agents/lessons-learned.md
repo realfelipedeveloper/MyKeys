@@ -25,3 +25,9 @@
 - 2026-08-12: `docker compose config --format json` valida um Compose minimo
   com `services: {}` sem subir containers; isso permite criar o namespace antes
   dos serviços reais da infra local.
+- 2026-08-12: O repositório deve usar `development` como branch padrão de
+  trabalho, promovendo mudanças por PR em `development -> homologation -> main`;
+  PRs de feature direto para `main` escondem o fluxo esperado.
+- 2026-08-12: A primeira inclusão de workflow GitHub Actions precisa ser
+  promovida pelas branches de ambiente; os checks ficam visíveis de forma
+  consistente depois que o workflow existir na branch base do PR.
