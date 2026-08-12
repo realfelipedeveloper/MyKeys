@@ -16,3 +16,5 @@
 - Para cada tarefa, enviar texto de PR e texto de merge para cada etapa:
   `feature/*` -> `development`, `development` -> `homologation` e
   `homologation` -> `main`.
+- Após merge em `development` ou `homologation`, abrir automaticamente o PR da
+  próxima promoção sem executar merge automático.

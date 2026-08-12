@@ -46,6 +46,9 @@ jobs:
       - name: Validate Docker Compose
         run: docker compose --env-file .env.example -f compose.yaml config --format json
 
+      - name: Validate promotion automation
+        run: pnpm check:promotions
+
       - name: Run lint
         run: pnpm lint
 
