@@ -138,6 +138,32 @@ pnpm check:compose
 docker compose --env-file .env.example -f compose.yaml config
 ```
 
+### SPEC-001 / TASK-016
+
+Status: concluida antecipadamente.
+
+Governança e CI/CD inicial:
+
+- branches remotas `development` e `homologation` criadas;
+- branch padrão do repositório ajustada para `development`;
+- fluxo obrigatório `feature/*` -> `development` -> `homologation` -> `main`;
+- workflow `.github/workflows/ci.yml` com lint, typecheck, test, build, audit,
+  Nx projects e validação do Docker Compose;
+- workflow `.github/workflows/promotions.yml` para abrir PR automático de
+  `development` para `homologation` e de `homologation` para `main`;
+- validadores locais `pnpm check:ci` e `pnpm check:promotions`.
+
+Comandos principais:
+
+```bash
+pnpm check:ci
+pnpm check:promotions
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
 ## Stack consolidada
 
 - Monorepo: Nx + pnpm

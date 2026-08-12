@@ -12,13 +12,15 @@
     "check:workspace": "node tools/check-workspace.mjs",
     "check:aliases": "tsc --noEmit -p tsconfig.aliases.json",
     "check:compose": "node tools/check-compose.mjs",
+    "check:ci": "node tools/check-ci.mjs",
+    "check:promotions": "node tools/check-promotions.mjs",
     "check:apps": "node tools/check-apps.mjs",
     "check:packages": "node tools/check-packages.mjs",
     "lint:tooling": "eslint eslint.config.mjs tools",
-    "lint": "pnpm format:check && pnpm check:workspace && pnpm check:aliases && pnpm check:compose && pnpm lint:tooling && nx run-many -t lint --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
-    "typecheck": "pnpm check:workspace && pnpm check:aliases && pnpm check:compose && nx run-many -t typecheck --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
-    "test": "pnpm check:workspace && pnpm check:aliases && pnpm check:compose && nx run-many -t test --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
-    "build": "pnpm check:workspace && pnpm check:aliases && pnpm check:compose && nx run-many -t build --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared"
+    "lint": "pnpm format:check && pnpm check:workspace && pnpm check:aliases && pnpm check:compose && pnpm check:ci && pnpm check:promotions && pnpm lint:tooling && nx run-many -t lint --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "typecheck": "pnpm check:workspace && pnpm check:aliases && pnpm check:compose && pnpm check:ci && pnpm check:promotions && nx run-many -t typecheck --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "test": "pnpm check:workspace && pnpm check:aliases && pnpm check:compose && pnpm check:ci && pnpm check:promotions && nx run-many -t test --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared",
+    "build": "pnpm check:workspace && pnpm check:aliases && pnpm check:compose && pnpm check:ci && pnpm check:promotions && nx run-many -t build --projects=web,docs,core-api,payment-api,notification-api,worker,notification-worker,ui,contracts,config,observability,testing,crypto,shared"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

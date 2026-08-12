@@ -1,0 +1,68 @@
+name: MyKeys CI
+
+on:
+  pull_request:
+    branches:
+      - development
+      - homologation
+      - main
+  push:
+    branches:
+      - development
+      - homologation
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mykeys-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: validate workspace
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.1
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.20.0 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate Docker Compose
+        run: docker compose --env-file .env.example -f compose.yaml config --format json
+
+      - name: Validate promotion automation
+        run: pnpm check:promotions
+
+      - name: Run lint
+        run: pnpm lint
+
+      - name: Run typecheck
+        run: pnpm typecheck
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Run build
+        run: pnpm build
+
+      - name: Audit dependencies
+        run: pnpm audit --audit-level high
+
+      - name: Show Nx projects
+        run: pnpm nx show projects
