@@ -7,19 +7,19 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/packages/ui"],
       "options": {
-        "command": "node tools/build-package.mjs ui"
+        "command": "pnpm exec tsc -p packages/ui/tsconfig.lib.json && node tools/build-package.mjs ui"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs ui --lint"
+        "command": "pnpm exec eslint packages/ui"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs ui --typecheck"
+        "command": "pnpm exec tsc --noEmit -p packages/ui/tsconfig.lib.json"
       }
     },
     "test": {

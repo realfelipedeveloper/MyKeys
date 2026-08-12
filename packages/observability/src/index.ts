@@ -6,6 +6,8 @@ export const packageManifest = Object.freeze({
   description: "Pacote compartilhado para observabilidade e logs estruturados.",
 });
 
-export function describePackage() {
+export type PackageManifest = typeof packageManifest;
+
+export function describePackage(): PackageManifest {
   return { ...packageManifest };
 }

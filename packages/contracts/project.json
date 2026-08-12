@@ -7,19 +7,19 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/packages/contracts"],
       "options": {
-        "command": "node tools/build-package.mjs contracts"
+        "command": "pnpm exec tsc -p packages/contracts/tsconfig.lib.json && node tools/build-package.mjs contracts"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs contracts --lint"
+        "command": "pnpm exec eslint packages/contracts"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs contracts --typecheck"
+        "command": "pnpm exec tsc --noEmit -p packages/contracts/tsconfig.lib.json"
       }
     },
     "test": {

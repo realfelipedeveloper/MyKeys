@@ -7,19 +7,19 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/packages/crypto"],
       "options": {
-        "command": "node tools/build-package.mjs crypto"
+        "command": "pnpm exec tsc -p packages/crypto/tsconfig.lib.json && node tools/build-package.mjs crypto"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs crypto --lint"
+        "command": "pnpm exec eslint packages/crypto"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs crypto --typecheck"
+        "command": "pnpm exec tsc --noEmit -p packages/crypto/tsconfig.lib.json"
       }
     },
     "test": {

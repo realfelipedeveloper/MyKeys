@@ -7,19 +7,19 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/packages/config"],
       "options": {
-        "command": "node tools/build-package.mjs config"
+        "command": "pnpm exec tsc -p packages/config/tsconfig.lib.json && node tools/build-package.mjs config"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs config --lint"
+        "command": "pnpm exec eslint packages/config"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-packages.mjs config --typecheck"
+        "command": "pnpm exec tsc --noEmit -p packages/config/tsconfig.lib.json"
       }
     },
     "test": {

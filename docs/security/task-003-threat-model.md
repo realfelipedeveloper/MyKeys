@@ -17,14 +17,14 @@ Redis, filas, contratos publicos ou dados sensiveis nesta tarefa.
 
 ## STRIDE
 
-| Categoria | Risco nesta tarefa | Mitigacao |
-| --- | --- | --- |
-| Spoofing | Packages podem ser referenciados com nomes inconsistentes. | `package.json`, `package.config.json` e registro central sao validados. |
-| Tampering | Metadados de packages podem divergir. | `tools/check-packages.mjs` compara todos os manifestos. |
-| Repudiation | Nao ha eventos de negocio ou auditoria. | Fora de escopo; observabilidade real entra em tarefas futuras. |
-| Information disclosure | Package de config ou observability poderia expor valores sensiveis. | Shells exportam apenas metadados sem valores de ambiente ou segredos. |
-| Denial of service | Build de packages poderia deixar artefatos inconsistentes. | `tools/build-package.mjs` gera manifestos deterministicos em `dist/`. |
-| Elevation of privilege | Packages ainda nao possuem autorizacao ou execucao privilegiada. | Nenhuma operacao privilegiada foi implementada. |
+| Categoria              | Risco nesta tarefa                                                  | Mitigacao                                                               |
+| ---------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Spoofing               | Packages podem ser referenciados com nomes inconsistentes.          | `package.json`, `package.config.json` e registro central sao validados. |
+| Tampering              | Metadados de packages podem divergir.                               | `tools/check-packages.mjs` compara todos os manifestos.                 |
+| Repudiation            | Nao ha eventos de negocio ou auditoria.                             | Fora de escopo; observabilidade real entra em tarefas futuras.          |
+| Information disclosure | Package de config ou observability poderia expor valores sensiveis. | Shells exportam apenas metadados sem valores de ambiente ou segredos.   |
+| Denial of service      | Build de packages poderia deixar artefatos inconsistentes.          | `tools/build-package.mjs` gera manifestos deterministicos em `dist/`.   |
+| Elevation of privilege | Packages ainda nao possuem autorizacao ou execucao privilegiada.    | Nenhuma operacao privilegiada foi implementada.                         |
 
 ## Abuse cases
 

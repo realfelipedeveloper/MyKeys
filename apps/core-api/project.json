@@ -6,26 +6,26 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node apps/core-api/src/main.mjs"
+        "command": "node tools/app-runtime.mjs core-api"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/apps/core-api"],
       "options": {
-        "command": "node tools/build-app.mjs core-api"
+        "command": "pnpm exec tsc -p apps/core-api/tsconfig.app.json && node tools/build-app.mjs core-api"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs core-api --lint"
+        "command": "pnpm exec eslint apps/core-api"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs core-api --typecheck"
+        "command": "pnpm exec tsc --noEmit -p apps/core-api/tsconfig.app.json"
       }
     },
     "test": {

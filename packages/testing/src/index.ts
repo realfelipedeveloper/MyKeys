@@ -6,6 +6,8 @@ export const packageManifest = Object.freeze({
   description: "Pacote compartilhado para utilitarios de testes.",
 });
 
-export function describePackage() {
+export type PackageManifest = typeof packageManifest;
+
+export function describePackage(): PackageManifest {
   return { ...packageManifest };
 }

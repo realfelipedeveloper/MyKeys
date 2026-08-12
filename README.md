@@ -92,8 +92,31 @@ Packages criados:
 - `packages/shared`.
 
 Cada package possui targets Nx para `build`, `lint`, `typecheck` e `test`.
-Nesta tarefa os packages sao shells minimos e privados; implementacoes reais
-entram nas tarefas especificas da SPEC-001.
+Nesta tarefa os packages sao shells minimos e privados; implementacoes reais entram nas tarefas especificas da SPEC-001.
+
+### SPEC-001 / TASK-004
+
+Status: concluida.
+
+Tooling configurado:
+
+- TypeScript strict com `tsconfig.base.json`;
+- ESLint flat config;
+- Prettier como gate de formato;
+- aliases `@mykeys/*` apontando para `packages/*/src/index.ts`;
+- smoke test de aliases em `tools/alias-smoke.ts`;
+- apps migrados para `apps/*/src/main.ts`;
+- packages migrados para `packages/*/src/index.ts`.
+
+Comandos principais:
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
 
 ## Stack consolidada
 

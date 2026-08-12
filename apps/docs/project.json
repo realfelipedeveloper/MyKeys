@@ -6,26 +6,26 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node apps/docs/src/main.mjs"
+        "command": "node tools/app-runtime.mjs docs"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/apps/docs"],
       "options": {
-        "command": "node tools/build-app.mjs docs"
+        "command": "pnpm exec tsc -p apps/docs/tsconfig.app.json && node tools/build-app.mjs docs"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs docs --lint"
+        "command": "pnpm exec eslint apps/docs"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/check-apps.mjs docs --typecheck"
+        "command": "pnpm exec tsc --noEmit -p apps/docs/tsconfig.app.json"
       }
     },
     "test": {

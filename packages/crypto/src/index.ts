@@ -6,6 +6,8 @@ export const packageManifest = Object.freeze({
   description: "Pacote reservado para criptografia cliente-side do MyKeys.",
 });
 
-export function describePackage() {
+export type PackageManifest = typeof packageManifest;
+
+export function describePackage(): PackageManifest {
   return { ...packageManifest };
 }

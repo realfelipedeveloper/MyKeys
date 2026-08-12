@@ -11,7 +11,14 @@
       "{workspaceRoot}/package.json",
       "{workspaceRoot}/pnpm-lock.yaml",
       "{workspaceRoot}/nx.json",
-      "{workspaceRoot}/tools/**/*.mjs"
+      "{workspaceRoot}/eslint.config.mjs",
+      "{workspaceRoot}/tsconfig.base.json",
+      "{workspaceRoot}/tsconfig.eslint.json",
+      "{workspaceRoot}/tsconfig.aliases.json",
+      "{workspaceRoot}/.prettierrc.json",
+      "{workspaceRoot}/.prettierignore",
+      "{workspaceRoot}/tools/**/*.mjs",
+      "{workspaceRoot}/tools/**/*.ts"
     ]
   },
   "targetDefaults": {

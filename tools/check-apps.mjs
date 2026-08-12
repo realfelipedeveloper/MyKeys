@@ -1,14 +1,17 @@
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import { spawn, spawnSync } from "node:child_process";
+import { pathToFileURL } from "node:url";
+import { resolve } from "node:path";
 import { mykeysApps } from "./mykeys-apps.mjs";
 
 const args = process.argv.slice(2);
 const selectedApp = args.find((arg) => !arg.startsWith("--"));
-const shouldRunStartupSmoke = args.includes("--test") || args.includes("--startup");
-const apps = selectedApp
-  ? mykeysApps.filter((app) => app.name === selectedApp)
-  : mykeysApps;
+const flags = new Set(args.filter((arg) => arg.startsWith("--")));
+const shouldRunLint = flags.has("--lint");
+const shouldRunTypecheck = flags.has("--typecheck") || flags.has("--test");
+const shouldRunStartupSmoke = flags.has("--test") || flags.has("--startup");
+const apps = selectedApp ? mykeysApps.filter((app) => app.name === selectedApp) : mykeysApps;
 
 assert.ok(apps.length > 0, `unknown app: ${selectedApp}`);
 
@@ -22,11 +25,13 @@ async function validateApp(app) {
   const basePath = `apps/${app.name}`;
   const configPath = `${basePath}/app.config.json`;
   const projectPath = `${basePath}/project.json`;
-  const mainPath = `${basePath}/src/main.mjs`;
+  const mainPath = `${basePath}/src/main.ts`;
+  const tsconfigPath = `${basePath}/tsconfig.app.json`;
 
   await assertExists(configPath);
   await assertExists(projectPath);
   await assertExists(mainPath);
+  await assertExists(tsconfigPath);
 
   const config = await readJson(configPath);
   const project = await readJson(projectPath);
@@ -45,13 +50,31 @@ async function validateApp(app) {
   }
 
   const source = await readFile(mainPath, "utf8");
-  assert.match(source, new RegExp(`startApp\\("${app.name}"\\)`));
+  assert.match(source, new RegExp(`name: "${app.name}"`));
+  assert.match(source, /runtimeEntrypoint: "tools\/app-runtime\.mjs"/);
+  assert.doesNotMatch(source, /master password|plaintext|private key/i);
 
-  runNode(["--check", mainPath], `${app.name} syntax check failed`);
+  if (shouldRunLint) {
+    runPnpm(["exec", "eslint", basePath], `${app.name} lint failed`);
+  }
+
+  if (shouldRunTypecheck) {
+    runPnpm(["exec", "tsc", "--noEmit", "-p", tsconfigPath], `${app.name} typecheck failed`);
+  }
+
+  if (shouldRunStartupSmoke) {
+    runPnpm(["exec", "tsc", "-p", tsconfigPath], `${app.name} TypeScript emit failed`);
+    const bootstrap = await importBuiltApp(app);
+
+    assert.equal(bootstrap.appBootstrap.name, app.name);
+    assert.equal(bootstrap.appBootstrap.configPath, configPath);
+    assert.equal(bootstrap.appBootstrap.runtimeEntrypoint, "tools/app-runtime.mjs");
+  }
+
   const payload =
     shouldRunStartupSmoke && app.runtime === "http"
-      ? await runHttpStartupSmoke(app, mainPath)
-      : runProcessStartupCheck(app, mainPath);
+      ? await runHttpStartupSmoke(app)
+      : runProcessStartupCheck(app);
 
   assert.equal(payload.app, app.name);
   assert.equal(payload.kind, app.kind);
@@ -67,28 +90,22 @@ async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
-function runNode(args, message) {
-  const result = spawnSync(process.execPath, args, {
-    encoding: "utf8",
-    stdio: "pipe",
-  });
-
-  assert.equal(
-    result.status,
-    0,
-    `${message}\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`,
-  );
-
-  return result;
+async function importBuiltApp(app) {
+  const builtPath = resolve(`dist/apps/${app.name}/main.js`);
+  await assertExists(builtPath);
+  return import(pathToFileURL(builtPath).href);
 }
 
-function runProcessStartupCheck(app, mainPath) {
-  const smoke = runNode([mainPath, "--check"], `${app.name} startup check failed`);
+function runProcessStartupCheck(app) {
+  const smoke = runNode(
+    ["tools/app-runtime.mjs", app.name, "--check"],
+    `${app.name} startup check failed`,
+  );
   return JSON.parse(smoke.stdout.trim());
 }
 
-async function runHttpStartupSmoke(app, mainPath) {
-  const child = spawn(process.execPath, [mainPath], {
+async function runHttpStartupSmoke(app) {
+  const child = spawn(process.execPath, ["tools/app-runtime.mjs", app.name], {
     env: {
       ...process.env,
       [app.portEnv]: String(app.defaultPort),
@@ -116,6 +133,43 @@ async function runHttpStartupSmoke(app, mainPath) {
     child.kill("SIGTERM");
     await waitForExit(child);
   }
+}
+
+function runNode(args, message) {
+  const result = spawnSync(process.execPath, args, {
+    encoding: "utf8",
+    stdio: "pipe",
+  });
+
+  assert.equal(
+    result.status,
+    0,
+    `${message}\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`,
+  );
+
+  return result;
+}
+
+function runPnpm(args, message) {
+  const commandLine = ["pnpm", ...args].map(toSafeShellArgument).join(" ");
+  const result = spawnSync(commandLine, {
+    encoding: "utf8",
+    stdio: "pipe",
+    shell: true,
+  });
+
+  assert.equal(
+    result.status,
+    0,
+    `${message}\nerror:\n${result.error?.message ?? ""}\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`,
+  );
+
+  return result;
+}
+
+function toSafeShellArgument(argument) {
+  assert.doesNotMatch(argument, /[\s"'`$&|;<>()]/u, `unsafe shell argument: ${argument}`);
+  return argument;
 }
 
 async function waitForJsonResponse(url, exitCode, stdout, stderr) {
@@ -146,11 +200,13 @@ async function waitForExit(child) {
   }
 
   await Promise.race([
-    new Promise((resolve) => child.once("exit", resolve)),
+    new Promise((resolvePromise) => child.once("exit", resolvePromise)),
     sleep(1_000),
   ]);
 }
 
 async function sleep(ms) {
-  await new Promise((resolve) => setTimeout(resolve, ms));
+  await new Promise((resolvePromise) => {
+    setTimeout(resolvePromise, ms);
+  });
 }
