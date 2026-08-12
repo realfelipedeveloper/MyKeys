@@ -47,6 +47,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
   pendentes.
 - Separar a concorrência do CI por tipo de evento para evitar cancelamento entre
   `push` e `workflow_dispatch`.
+- Publicar o commit status `validate workspace` somente após o CI disparado pela
+  automação passar.
 - Ajustar o ruleset remoto para exigir `validate workspace` sem política estrita
   de branch atualizada antes do merge.
 - Não implementar deploy automático nesta task.
@@ -80,12 +82,16 @@ O CI separa a concorrência por evento para que validações manuais disparadas
 pela automação não cancelem validações de `push`. O ruleset remoto exige o
 check `validate workspace`, mas mantém desabilitada a política estrita de
 branch atualizada para preservar o fluxo de promoção.
+Quando o CI manual passa, a automação publica o commit status obrigatório no SHA
+promovido e aponta para o run real do GitHub Actions.
 
 ## Verificações de segurança
 
 - Workflow usa permissões mínimas `contents: read`.
 - Workflow de promoção usa `pull-requests: write` somente para abrir PRs.
 - Workflow de promoção usa `actions: write` para disparar `MyKeys CI`.
+- Workflow de promoção usa `statuses: write` somente para publicar o resultado
+  aprovado do CI como status obrigatório.
 - Workflow de promoção não faz aprovação, merge ou push.
 - Workflow não usa `pull_request_target`.
 - CI baseline não referencia `secrets.*`.

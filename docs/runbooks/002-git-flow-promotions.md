@@ -52,6 +52,9 @@ feature/* -> development -> homologation -> main
 - O CI separa a concorrência por evento (`push`, `pull_request` e
   `workflow_dispatch`) para que uma validação manual disparada pela automação
   não cancele a validação de `push` exigida pelo ruleset.
+- Depois que o `workflow_dispatch` do CI passa, a automação publica o commit
+  status `validate workspace` apontando para o run real. Isso materializa o
+  check obrigatório em PRs criados automaticamente pelo `GITHUB_TOKEN`.
 - A automação não faz merge, não faz push e não cria PR duplicado.
 - A automação não aprova PRs.
 - O repositório deve manter `Workflow permissions` em `Read and write` e

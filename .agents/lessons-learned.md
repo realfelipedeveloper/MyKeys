@@ -54,3 +54,6 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
 - 2026-08-12: Ruleset de promoção deve exigir o check `validate workspace`, mas
   sem política estrita de branch atualizada, porque `homologation` e `main`
   acumulam commits de merge próprios durante o Git Flow.
+- 2026-08-12: `workflow_dispatch` pode passar sem aparecer no resumo do PR; a
+  automação deve publicar um commit status `validate workspace` apontando para o
+  run aprovado para satisfazer o ruleset sem fingir validação.

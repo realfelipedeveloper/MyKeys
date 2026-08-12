@@ -31,6 +31,11 @@ assert.match(
 );
 assert.match(
   workflow,
+  /statuses: write/,
+  "promotion workflow must be allowed to publish the required validation status",
+);
+assert.match(
+  workflow,
   /secrets\.MYKEYS_AUTOMATION_TOKEN \|\| github\.token/,
   "promotion workflow must support an optional automation token fallback",
 );
@@ -72,8 +77,23 @@ assert.match(
 );
 assert.match(
   workflow,
-  /--ref "\$\{\{ steps\.promotion\.outputs\.source_branch \}\}"/,
+  /--ref "\$\{SOURCE\}"/,
   "promotion workflow must trigger CI on the source branch",
+);
+assert.match(
+  workflow,
+  /gh run watch "\$\{VALIDATION_RUN_ID\}"/,
+  "promotion workflow must wait for the validation run to finish",
+);
+assert.match(
+  workflow,
+  /repos\/\$\{GH_REPO\}\/statuses\/\$\{SOURCE_SHA\}/,
+  "promotion workflow must publish a required validation status",
+);
+assert.match(
+  workflow,
+  /context="validate workspace"/,
+  "promotion workflow must publish the required validate workspace context",
 );
 assert.match(
   workflow,

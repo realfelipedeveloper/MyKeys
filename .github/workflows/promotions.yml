@@ -27,6 +27,7 @@ permissions:
   actions: write
   contents: read
   pull-requests: write
+  statuses: write
 
 concurrency:
   group: mykeys-promotions-${{ github.ref }}
@@ -36,7 +37,7 @@ jobs:
   open-promotion-pr:
     name: open promotion pull request
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
 
     env:
       GH_TOKEN: ${{ secrets.MYKEYS_AUTOMATION_TOKEN || github.token }}
@@ -195,6 +196,46 @@ jobs:
         run: |
           set -euo pipefail
 
+          SOURCE="${{ steps.promotion.outputs.source_branch }}"
+          SOURCE_SHA="$(gh api "repos/${GH_REPO}/git/ref/heads/${SOURCE}" --jq '.object.sha')"
+
           gh workflow run "MyKeys CI" \
             --repo "${GH_REPO}" \
-            --ref "${{ steps.promotion.outputs.source_branch }}"
+            --ref "${SOURCE}"
+
+          VALIDATION_RUN_ID=""
+
+          for _ in {1..40}; do
+            VALIDATION_RUN_ID="$(gh api "repos/${GH_REPO}/actions/workflows/ci.yml/runs" \
+              -f branch="${SOURCE}" \
+              -f event="workflow_dispatch" \
+              -f per_page=20 \
+              --jq ".workflow_runs[] | select(.head_sha == \"${SOURCE_SHA}\") | .id" | head -n 1)"
+
+            if [[ -n "$VALIDATION_RUN_ID" ]]; then
+              break
+            fi
+
+            sleep 3
+          done
+
+          if [[ -z "$VALIDATION_RUN_ID" ]]; then
+            echo "Nao foi possivel localizar a validacao disparada para ${SOURCE_SHA}."
+            exit 1
+          fi
+
+          gh run watch "${VALIDATION_RUN_ID}" \
+            --repo "${GH_REPO}" \
+            --exit-status
+
+          VALIDATION_URL="$(gh run view "${VALIDATION_RUN_ID}" \
+            --repo "${GH_REPO}" \
+            --json url \
+            --jq '.url')"
+
+          gh api "repos/${GH_REPO}/statuses/${SOURCE_SHA}" \
+            -X POST \
+            -f state="success" \
+            -f context="validate workspace" \
+            -f description="MyKeys CI workflow_dispatch passou" \
+            -f target_url="${VALIDATION_URL}"

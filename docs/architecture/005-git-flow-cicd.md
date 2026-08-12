@@ -49,6 +49,12 @@ O CI usa concorrência separada por `github.event_name`, evitando que a validaç
 manual por `workflow_dispatch` cancele a validação de `push` que também pode ser
 exigida pelo ruleset.
 
+Quando o CI disparado por `workflow_dispatch` passa, o workflow de promoções
+publica o commit status `validate workspace` no SHA de origem e aponta esse
+status para o run real. Essa etapa materializa o check obrigatório em PRs
+criados por automação, já que o GitHub pode não associar automaticamente o run
+manual ao resumo do PR.
+
 O ruleset remoto `MyKeys Git Flow protections` protege `development`,
 `homologation` e `main`, exige PR, bloqueia deleção e force push, e exige o
 check `validate workspace`. A política estrita de branch atualizada permanece

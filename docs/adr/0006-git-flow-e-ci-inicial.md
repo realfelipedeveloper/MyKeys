@@ -69,6 +69,7 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - verifica diferenças antes de abrir PR;
 - evita PR duplicado;
 - dispara `MyKeys CI` após criar ou detectar PR com mudanças pendentes;
+- publica o status `validate workspace` após o CI real passar;
 - não usa `pull_request_target`;
 - não faz merge automático, aprovação automática nem push.
 
@@ -107,6 +108,8 @@ falso para o fluxo `development -> homologation -> main`.
   automação de PRs.
 - A automação dispara CI explicitamente para cobrir PRs criados por
   `GITHUB_TOKEN`.
+- A automação materializa o resultado do CI como commit status obrigatório
+  `validate workspace`, sempre apontando para o run real aprovado.
 - O CI usa actions oficiais em runtime Node 24 e desabilita cache automático do
   `setup-node`.
 - A concorrência do CI não cancela validações de `push` quando a automação
@@ -129,6 +132,8 @@ falso para o fluxo `development -> homologation -> main`.
 - A política de status check sem atualização estrita permite merge de promoção
   quando o check obrigatório passa, mesmo que a branch base tenha commits de
   merge próprios.
+- A automação de promoção espera o CI terminar, então a abertura/atualização de
+  PR pode levar mais tempo.
 
 ## Riscos
 
