@@ -13,6 +13,7 @@
       "{workspaceRoot}/nx.json",
       "{workspaceRoot}/compose.yaml",
       "{workspaceRoot}/.env.example",
+      "{workspaceRoot}/.github/workflows/*.yml",
       "{workspaceRoot}/eslint.config.mjs",
       "{workspaceRoot}/tsconfig.base.json",
       "{workspaceRoot}/tsconfig.eslint.json",
