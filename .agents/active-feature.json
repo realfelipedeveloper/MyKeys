@@ -2,8 +2,8 @@
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
   "status": "in_progress",
-  "currentTask": "TASK-004",
-  "updatedAt": "2026-08-11",
+  "currentTask": "TASK-005",
+  "updatedAt": "2026-08-12",
   "services": [
     "web",
     "docs",
@@ -33,7 +33,9 @@
     "prettier@3.9.6",
     "@eslint/js@10.0.1",
     "@types/node@24.13.3",
-    "globals@17.9.0"
+    "globals@17.9.0",
+    "Docker 28.4.0",
+    "Docker Compose v2.39.2"
   ],
   "risks": [
     "port conflicts",
@@ -49,7 +51,10 @@
     "TypeScript and typescript-eslint compatibility drift",
     "path alias drift",
     "Prettier churn on legacy documentation",
-    "temporary minimumReleaseAgeExclude entries for typescript-eslint packages"
+    "temporary minimumReleaseAgeExclude entries for typescript-eslint packages",
+    "Docker Compose namespace drift",
+    "accidental container_name usage",
+    "host port collision for local infrastructure"
   ],
   "requiredTests": [
     "unit",
@@ -62,7 +67,9 @@
     "package-import-smoke",
     "format-check",
     "alias-smoke",
-    "static-analysis"
+    "static-analysis",
+    "compose-config",
+    "compose-namespace-validation"
   ],
   "requiredDocs": [
     "README",

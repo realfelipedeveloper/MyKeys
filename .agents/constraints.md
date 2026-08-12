@@ -8,3 +8,5 @@
 - Não adicionar dependências sem justificativa.
 - Não alterar testes para mascarar falhas.
 - Mensagens de commit devem ser escritas sempre em português.
+- Textos de pull request e merge devem ser enviados sempre em português, com
+  resumo, validações, impacto e riscos quando aplicável.

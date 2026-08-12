@@ -118,6 +118,26 @@ pnpm test
 pnpm build
 ```
 
+### SPEC-001 / TASK-005
+
+Status: concluida.
+
+Infra local iniciada:
+
+- `compose.yaml` com namespace `mykeys`;
+- rede privada `mykeys_private`;
+- `.env.example` com portas nao comuns da SPEC-001;
+- validador `pnpm check:compose`;
+- sem serviços reais ainda, preservando PostgreSQL, Redis, Mailpit e MinIO para
+  as tasks dedicadas.
+
+Comandos principais:
+
+```bash
+pnpm check:compose
+docker compose --env-file .env.example -f compose.yaml config
+```
+
 ## Stack consolidada
 
 - Monorepo: Nx + pnpm
