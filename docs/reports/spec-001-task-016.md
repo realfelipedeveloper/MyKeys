@@ -83,7 +83,9 @@ novos commits.
 - `MYKEYS_AUTOMATION_TOKEN` é opcional para reduzir fricção dos checks em PRs
   criados por automação.
 - Nenhuma dependência npm nova foi adicionada.
-- Actions utilizadas são oficiais: `actions/checkout` e `actions/setup-node`.
+- Actions utilizadas são oficiais e usam runtime Node 24:
+  `actions/checkout@v5` e `actions/setup-node@v5`.
+- Cache automático do `setup-node` permanece desabilitado.
 
 ## Riscos residuais
 

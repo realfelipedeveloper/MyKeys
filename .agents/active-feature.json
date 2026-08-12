@@ -37,8 +37,8 @@
     "Docker 28.4.0",
     "Docker Compose v2.39.2",
     "GitHub Actions",
-    "actions/checkout@v4",
-    "actions/setup-node@v4",
+    "actions/checkout@v5",
+    "actions/setup-node@v5",
     "GitHub CLI in GitHub Actions"
   ],
   "risks": [
@@ -61,6 +61,7 @@
     "host port collision for local infrastructure",
     "feature PR targeting main directly",
     "CI workflow drift",
+    "GitHub Actions Node runtime deprecation",
     "promotion branch drift",
     "feature pull request automation drift",
     "duplicate promotion pull requests",

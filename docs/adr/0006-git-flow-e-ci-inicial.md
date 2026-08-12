@@ -38,6 +38,8 @@ etapa de promoção:
 
 Criar `.github/workflows/ci.yml` com validação inicial:
 
+- `actions/checkout@v5`;
+- `actions/setup-node@v5` com Node.js `24.14.1`;
 - `pnpm install --frozen-lockfile`;
 - `pnpm check:promotions`;
 - `pnpm lint`;
@@ -97,6 +99,8 @@ explícitas e mínimas.
   automação de PRs.
 - A automação dispara CI explicitamente para cobrir PRs criados por
   `GITHUB_TOKEN`.
+- O CI usa actions oficiais em runtime Node 24 e desabilita cache automático do
+  `setup-node`.
 
 ## Consequências negativas
 
