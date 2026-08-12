@@ -16,7 +16,7 @@ Restrições:
 
 - menor privilégio;
 - sem acesso administrativo;
-- sem push direto em main/develop.
+- sem push direto em `development`, `homologation` ou `main`.
 
 ### Playwright MCP
 
