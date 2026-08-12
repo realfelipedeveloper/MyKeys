@@ -18,6 +18,11 @@ assert.doesNotMatch(
 assert.match(workflow, /workflow_dispatch:/, "promotion workflow must allow manual dispatch");
 assert.match(workflow, /source_branch:/, "manual dispatch must require a source branch");
 assert.match(workflow, /target_branch:/, "manual dispatch must allow an explicit target branch");
+assert.match(
+  workflow,
+  /actions: write/,
+  "promotion workflow must be allowed to trigger CI validation",
+);
 assert.match(workflow, /contents: read/, "promotion workflow must use read-only contents access");
 assert.match(
   workflow,
@@ -60,6 +65,16 @@ assert.match(
   "promotion workflow must check existing PRs with owner-qualified heads",
 );
 assert.match(workflow, /gh pr create/, "promotion workflow must create promotion PRs");
+assert.match(
+  workflow,
+  /gh workflow run "MyKeys CI"/,
+  "promotion workflow must trigger CI for automation-created pull requests",
+);
+assert.match(
+  workflow,
+  /--ref "\$\{\{ steps\.promotion\.outputs\.source_branch \}\}"/,
+  "promotion workflow must trigger CI on the source branch",
+);
 assert.match(
   workflow,
   /steps\.existing\.outputs\.exists == 'false'/,

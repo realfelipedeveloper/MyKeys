@@ -65,7 +65,8 @@
     "feature pull request automation drift",
     "duplicate promotion pull requests",
     "GITHUB_TOKEN approval gate for automation-created pull requests",
-    "GitHub Actions pull request approval permission overreach"
+    "GitHub Actions pull request approval permission overreach",
+    "CI not triggered for automation-created pull requests"
   ],
   "requiredTests": [
     "unit",

@@ -41,6 +41,10 @@ manter `Workflow permissions` em `Read and write` e permitir que GitHub Actions
 crie pull requests. Os workflows continuam declarando permissões mínimas por
 arquivo.
 
+Após abrir ou detectar um PR de promoção com mudanças pendentes, a automação
+dispara `MyKeys CI` por `workflow_dispatch` na branch de origem para garantir
+validação mesmo quando o PR foi criado pelo `GITHUB_TOKEN`.
+
 Cada tarefa deve receber texto de PR e texto de merge em português para:
 
 - `feature/*` -> `development`;

@@ -127,6 +127,12 @@ assert.match(
   /pull-requests: write/,
   "promotion workflow must be allowed to open pull requests",
 );
+assert.match(
+  promotionsWorkflow,
+  /actions: write/,
+  "promotion workflow must be allowed to trigger CI after opening PRs",
+);
+assert.match(promotionsWorkflow, /gh workflow run "MyKeys CI"/);
 
 for (const packageName of mykeysPackageNames) {
   assert.deepEqual(

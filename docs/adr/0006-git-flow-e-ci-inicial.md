@@ -64,6 +64,7 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - promove `homologation` para `main`;
 - verifica diferenças antes de abrir PR;
 - evita PR duplicado;
+- dispara `MyKeys CI` após criar ou detectar PR com mudanças pendentes;
 - não usa `pull_request_target`;
 - não faz merge automático, aprovação automática nem push.
 
@@ -94,6 +95,8 @@ explícitas e mínimas.
   opcional `MYKEYS_AUTOMATION_TOKEN`.
 - O validador bloqueia uso de `gh pr review`, `gh pr merge` e `git push` na
   automação de PRs.
+- A automação dispara CI explicitamente para cobrir PRs criados por
+  `GITHUB_TOKEN`.
 
 ## Consequências negativas
 

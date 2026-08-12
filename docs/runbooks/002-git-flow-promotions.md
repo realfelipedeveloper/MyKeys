@@ -47,11 +47,15 @@ feature/* -> development -> homologation -> main
   `development` após push na branch de feature.
 - O workflow `MyKeys Promotions` abre automaticamente o próximo PR de promoção
   após merge em `development` ou `homologation`.
+- A automação dispara o workflow `MyKeys CI` após abrir ou atualizar a
+  necessidade de promoção.
 - A automação não faz merge, não faz push e não cria PR duplicado.
 - A automação não aprova PRs.
 - O repositório deve manter `Workflow permissions` em `Read and write` e
   `Allow GitHub Actions to create and approve pull requests` habilitado para que
   o `GITHUB_TOKEN` consiga abrir PRs automaticamente.
 - Se o PR automático for criado com `GITHUB_TOKEN`, o GitHub pode exigir
-  aprovação manual dos checks. Para execução sem essa aprovação, configurar um
-  token de automação em `MYKEYS_AUTOMATION_TOKEN`.
+  aprovação manual para executar checks. O workflow também dispara `MyKeys CI`
+  via `workflow_dispatch` para reduzir essa fricção. Para execução sem
+  aprovação manual em cenários mais restritivos, configurar um token de
+  automação em `MYKEYS_AUTOMATION_TOKEN`.

@@ -20,6 +20,7 @@ manual dos checks em PRs criados por automação.
 | Repudiation            | Promoções podem ficar sem rastreio claro.                     | Cada etapa exige PR e merge com textos em português.                       |
 | Information disclosure | Workflow pode expor secrets por engano.                       | CI usa `contents: read`; token de promoção é opcional e limitado a PRs.    |
 | Denial of service      | CI pode ficar lento ou bloquear merges por falha operacional. | Pipeline inicial reutiliza gates locais e tem timeout definido.            |
+| Denial of service      | Automação pode disparar CI em excesso.                        | Disparo ocorre apenas quando há diferenças entre origem e destino.         |
 | Elevation of privilege | `pull_request_target` poderia executar código não confiável.  | Workflows não usam `pull_request_target` e validadores bloqueiam esse uso. |
 | Elevation of privilege | Actions podem aprovar PRs se o workflow for alterado.         | Validador bloqueia `gh pr review`, merge automático e push.                |
 

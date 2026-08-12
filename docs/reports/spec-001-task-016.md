@@ -43,6 +43,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
   `homologation` para `main` após merges.
 - Habilitar no repositório permissão de workflow para criação de PRs pelo
   GitHub Actions.
+- Disparar `MyKeys CI` pela automação após criar ou detectar PR com mudanças
+  pendentes.
 - Não implementar deploy automático nesta task.
 
 ## Testes executados
@@ -74,6 +76,7 @@ novos commits.
 
 - Workflow usa permissões mínimas `contents: read`.
 - Workflow de promoção usa `pull-requests: write` somente para abrir PRs.
+- Workflow de promoção usa `actions: write` para disparar `MyKeys CI`.
 - Workflow de promoção não faz aprovação, merge ou push.
 - Workflow não usa `pull_request_target`.
 - CI baseline não referencia `secrets.*`.

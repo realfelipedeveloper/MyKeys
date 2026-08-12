@@ -24,6 +24,7 @@ on:
           - main
 
 permissions:
+  actions: write
   contents: read
   pull-requests: write
 
@@ -187,3 +188,13 @@ jobs:
             --base "${{ steps.promotion.outputs.target_branch }}" \
             --title "${{ steps.promotion.outputs.title }}" \
             --body-file "${{ steps.body.outputs.path }}"
+
+      - name: Trigger promotion validation
+        if: steps.diff.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gh workflow run "MyKeys CI" \
+            --repo "${GH_REPO}" \
+            --ref "${{ steps.promotion.outputs.source_branch }}"
