@@ -7,16 +7,17 @@ const workflow = await readFile(workflowPath, "utf8");
 assert.match(workflow, /^name:\s+MyKeys Promotions$/m, "promotion workflow must be named");
 assert.match(
   workflow,
-  /push:\s+branches:\s+- development\s+- homologation/s,
-  "promotion workflow must run after merges into development and homologation",
+  /push:\s+branches:\s+- feature\/\*\*\s+- development\s+- homologation/s,
+  "promotion workflow must run after feature pushes and merges into development or homologation",
 );
 assert.doesNotMatch(
   workflow,
-  /push:\s+branches:\s+- development\s+- homologation\s+- main/s,
+  /push:\s+branches:\s+- feature\/\*\*\s+- development\s+- homologation\s+- main/s,
   "promotion workflow must not open PRs after pushes to main",
 );
 assert.match(workflow, /workflow_dispatch:/, "promotion workflow must allow manual dispatch");
 assert.match(workflow, /source_branch:/, "manual dispatch must require a source branch");
+assert.match(workflow, /target_branch:/, "manual dispatch must allow an explicit target branch");
 assert.match(workflow, /contents: read/, "promotion workflow must use read-only contents access");
 assert.match(
   workflow,
@@ -27,6 +28,11 @@ assert.match(
   workflow,
   /secrets\.MYKEYS_AUTOMATION_TOKEN \|\| github\.token/,
   "promotion workflow must support an optional automation token fallback",
+);
+assert.match(
+  workflow,
+  /\[\[ "\$SOURCE_BRANCH" == feature\/\* \]\]; then\s+TARGET_BRANCH="development"/s,
+  "feature branches must open pull requests to development",
 );
 assert.match(
   workflow,

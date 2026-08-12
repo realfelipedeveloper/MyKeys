@@ -51,11 +51,15 @@ Criar `.github/workflows/ci.yml` com validação inicial:
 Adicionar `tools/check-ci.mjs` para validar localmente a configuração do
 workflow.
 
-Criar `.github/workflows/promotions.yml` para abrir automaticamente o próximo
-PR de promoção após atualizações em `development` ou `homologation`.
+Criar `.github/workflows/promotions.yml` para abrir automaticamente:
+
+- PR de `feature/*` para `development` após push em branch de feature;
+- PR de `development` para `homologation` após atualizações em `development`;
+- PR de `homologation` para `main` após atualizações em `homologation`.
 
 Adicionar `tools/check-promotions.mjs` para validar que a automação:
 
+- promove `feature/*` para `development`;
 - promove `development` para `homologation`;
 - promove `homologation` para `main`;
 - verifica diferenças antes de abrir PR;
@@ -77,8 +81,8 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - Novos PRs de feature passam a mirar `development` por padrão.
 - A promoção de código antes de `main` fica explícita e auditável.
 - Cada etapa de promoção passa a ter texto de PR e texto de merge padronizados.
-- PRs de promoção passam a ser abertos automaticamente após merge da etapa
-  anterior.
+- PRs de feature e de promoção passam a ser abertos automaticamente conforme a
+  etapa do fluxo.
 - O CI inicial passa a executar os gates locais ja existentes.
 - O CI baseline usa permissões mínimas e não consome secrets.
 - A automação de promoção usa permissões mínimas e aceita apenas o secret

@@ -10,11 +10,12 @@ feature/* -> development -> homologation -> main
 
 1. Criar a branch da task a partir de `development`.
 2. Implementar, testar e documentar.
-3. Abrir PR para `development`.
-4. Encaminhar texto de PR em português.
-5. Aguardar CI.
-6. Fazer merge com texto em português.
-7. Encaminhar texto de merge em português.
+3. Fazer push da branch `feature/*`.
+4. Confirmar o PR automático aberto de `feature/*` para `development`.
+5. Ajustar o texto do PR em português quando necessário.
+6. Aguardar CI.
+7. Fazer merge com texto em português.
+8. Encaminhar texto de merge em português.
 
 ## Development para homologation
 
@@ -42,6 +43,8 @@ feature/* -> development -> homologation -> main
 - Textos de PR e merge devem conter resumo, validações, impacto e riscos.
 - Toda tarefa deve ter texto de PR e texto de merge para as três etapas de
   promoção: `development`, `homologation` e `main`.
+- O workflow `MyKeys Promotions` abre automaticamente PR de `feature/*` para
+  `development` após push na branch de feature.
 - O workflow `MyKeys Promotions` abre automaticamente o próximo PR de promoção
   após merge em `development` ou `homologation`.
 - A automação não faz merge, não faz push e não cria PR duplicado.

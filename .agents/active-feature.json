@@ -62,6 +62,7 @@
     "feature PR targeting main directly",
     "CI workflow drift",
     "promotion branch drift",
+    "feature pull request automation drift",
     "duplicate promotion pull requests",
     "GITHUB_TOKEN approval gate for automation-created pull requests"
   ],
@@ -81,6 +82,7 @@
     "compose-namespace-validation",
     "ci-workflow-config",
     "git-flow-branch-validation",
+    "feature-pr-automation-config",
     "promotion-workflow-config"
   ],
   "requiredDocs": [

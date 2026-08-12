@@ -3,7 +3,8 @@
 ## Escopo
 
 Criação de branches de ambiente, ajuste da branch padrão para `development`,
-pipeline inicial de GitHub Actions e abertura automática de PRs de promoção.
+pipeline inicial de GitHub Actions e abertura automática de PRs de feature e
+promoção.
 
 Não há deploy, ambientes cloud, publicação de artefatos ou credenciais
 obrigatórias nesta tarefa. `MYKEYS_AUTOMATION_TOKEN` é opcional e deve ser
@@ -24,7 +25,7 @@ manual dos checks em PRs criados por automação.
 ## Abuse cases
 
 - Abrir feature direto para `main`: mitigado por branch padrão `development` e
-  regra documentada.
+  automação que direciona `feature/*` para `development`.
 - Consumir secrets no CI inicial: bloqueado por escopo e validador.
 - Remover `pnpm audit` ou `pnpm test` do workflow: bloqueado por
   `tools/check-ci.mjs`.

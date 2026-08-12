@@ -119,8 +119,8 @@ assert.match(ciWorkflow, /pnpm check:promotions/);
 assert.match(ciWorkflow, /pnpm audit --audit-level high/);
 assert.match(
   promotionsWorkflow,
-  /push:\s+branches:\s+- development\s+- homologation/s,
-  "promotion workflow must run after development and homologation updates",
+  /push:\s+branches:\s+- feature\/\*\*\s+- development\s+- homologation/s,
+  "promotion workflow must run after feature, development and homologation updates",
 );
 assert.match(
   promotionsWorkflow,

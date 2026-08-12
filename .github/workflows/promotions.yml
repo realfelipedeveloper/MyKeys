@@ -3,6 +3,7 @@ name: MyKeys Promotions
 on:
   push:
     branches:
+      - feature/**
       - development
       - homologation
   workflow_dispatch:
@@ -10,10 +11,17 @@ on:
       source_branch:
         description: Branch de origem da promoção
         required: true
+        type: string
+      target_branch:
+        description: Branch de destino da promoção
+        required: false
         type: choice
+        default: auto
         options:
+          - auto
           - development
           - homologation
+          - main
 
 permissions:
   contents: read
@@ -40,27 +48,44 @@ jobs:
         run: |
           set -euo pipefail
 
+          MANUAL_TARGET="auto"
+
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             SOURCE_BRANCH="${{ inputs.source_branch }}"
+            MANUAL_TARGET="${{ inputs.target_branch }}"
           else
             SOURCE_BRANCH="${GITHUB_REF_NAME}"
           fi
 
-          case "$SOURCE_BRANCH" in
-            development)
+          if [[ "$MANUAL_TARGET" != "auto" ]]; then
+            TARGET_BRANCH="$MANUAL_TARGET"
+            TITLE="Promover mudanças de ${SOURCE_BRANCH} para ${TARGET_BRANCH}"
+          elif [[ "$SOURCE_BRANCH" == feature/* ]]; then
+            TARGET_BRANCH="development"
+            TITLE="Integrar ${SOURCE_BRANCH} em development"
+          else
+            case "$SOURCE_BRANCH" in
+              development)
               TARGET_BRANCH="homologation"
               TITLE="Promover mudanças de development para homologation"
               ;;
-            homologation)
+              homologation)
               TARGET_BRANCH="main"
               TITLE="Promover mudanças de homologation para main"
               ;;
-            *)
+              *)
               echo "Sem destino de promoção para ${SOURCE_BRANCH}."
               echo "should_promote=false" >> "$GITHUB_OUTPUT"
               exit 0
               ;;
-          esac
+            esac
+          fi
+
+          if [[ "$SOURCE_BRANCH" == "$TARGET_BRANCH" ]]; then
+            echo "Origem e destino são iguais: ${SOURCE_BRANCH}."
+            echo "should_promote=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           echo "source_branch=${SOURCE_BRANCH}" >> "$GITHUB_OUTPUT"
           echo "target_branch=${TARGET_BRANCH}" >> "$GITHUB_OUTPUT"
@@ -127,7 +152,7 @@ jobs:
           cat > "$BODY_FILE" <<BODY
           ## Resumo
 
-          Promove automaticamente as mudanças de \`${SOURCE}\` para \`${TARGET}\` conforme o Git Flow do MyKeys.
+          Abre automaticamente o PR de \`${SOURCE}\` para \`${TARGET}\` conforme o Git Flow do MyKeys.
 
           ## Origem
 
@@ -142,11 +167,11 @@ jobs:
 
           ## Impacto
 
-          Mantém a sequência obrigatória \`feature/* -> development -> homologation -> main\` sem depender da abertura manual do PR de promoção.
+          Mantém a sequência obrigatória \`feature/* -> development -> homologation -> main\` sem depender da abertura manual do PR.
 
           ## Riscos
 
-          Esta automação abre o PR de promoção, mas o merge continua dependendo dos checks obrigatórios e da revisão humana quando aplicável.
+          Esta automação abre o PR, mas o merge continua dependendo dos checks obrigatórios e da revisão humana quando aplicável.
           BODY
 
           echo "path=${BODY_FILE}" >> "$GITHUB_OUTPUT"

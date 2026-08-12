@@ -29,6 +29,7 @@ devem ser feitas por PR.
 O workflow `.github/workflows/promotions.yml` automatiza a abertura dos PRs de
 promoção:
 
+- push em `feature/*` abre PR para `development`;
 - push/merge em `development` abre PR para `homologation`;
 - push/merge em `homologation` abre PR para `main`.
 

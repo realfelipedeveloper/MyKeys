@@ -38,3 +38,6 @@
   workflow em `push` para `development` e `homologation`, evitando duplicatas e
   mantendo merge manual. PRs criados com `GITHUB_TOKEN` podem exigir aprovação
   manual dos checks; `MYKEYS_AUTOMATION_TOKEN` fica reservado como alternativa.
+- 2026-08-12: A automação completa de Git Flow também precisa ouvir `push` em
+  `feature/**` para abrir PR automaticamente para `development`; proteger só as
+  branches de promoção não cobre o início do fluxo.

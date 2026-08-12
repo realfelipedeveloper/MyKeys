@@ -37,6 +37,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
 - Registrar que toda tarefa deve receber texto de PR e texto de merge para
   `development`, `homologation` e `main`.
 - Criar CI inicial com GitHub Actions e gates locais existentes.
+- Criar automação para abrir PR de `feature/*` para `development` após push em
+  branch de feature.
 - Criar automação para abrir PR de `development` para `homologation` e de
   `homologation` para `main` após merges.
 - Não implementar deploy automático nesta task.
@@ -62,8 +64,9 @@ usar `development` como branch padrão. O workflow de CI inicial foi adicionado
 com validações de lint, typecheck, testes, build, audit, Nx e Compose.
 O fluxo também passou a exigir textos de PR e merge para cada etapa de promoção
 até `main`.
-O workflow `MyKeys Promotions` abre automaticamente o próximo PR de promoção
-quando `development` ou `homologation` recebem novos commits.
+O workflow `MyKeys Promotions` abre automaticamente PRs de feature e o próximo
+PR de promoção quando `feature/*`, `development` ou `homologation` recebem
+novos commits.
 
 ## Verificações de segurança
 
