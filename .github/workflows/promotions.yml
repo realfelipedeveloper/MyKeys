@@ -103,13 +103,16 @@ jobs:
 
           SOURCE="${{ steps.promotion.outputs.source_branch }}"
           TARGET="${{ steps.promotion.outputs.target_branch }}"
-          AHEAD_BY="$(gh api "repos/${GH_REPO}/compare/${TARGET}...${SOURCE}" --jq '.ahead_by')"
+          COMPARE_ENDPOINT="repos/${GH_REPO}/compare/${TARGET}...${SOURCE}"
+          AHEAD_BY="$(gh api "${COMPARE_ENDPOINT}" --jq '.ahead_by')"
+          CHANGED_FILES="$(gh api "${COMPARE_ENDPOINT}" --jq '.files | length')"
 
           echo "ahead_by=${AHEAD_BY}" >> "$GITHUB_OUTPUT"
+          echo "changed_files=${CHANGED_FILES}" >> "$GITHUB_OUTPUT"
 
-          if [[ "$AHEAD_BY" == "0" ]]; then
+          if [[ "$AHEAD_BY" == "0" || "$CHANGED_FILES" == "0" ]]; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            echo "Sem mudanças para promover de ${SOURCE} para ${TARGET}."
+            echo "Sem mudanças de arquivos para promover de ${SOURCE} para ${TARGET}."
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
