@@ -56,6 +56,9 @@ feature/* -> development -> homologation -> main
   status `validate workspace` apontando para o run real. Isso materializa o
   check obrigatório em PRs criados automaticamente pelo `GITHUB_TOKEN`.
 - A automação não faz merge, não faz push e não cria PR duplicado.
+- A automação não deve abrir PR quando a comparação entre origem e destino tiver
+  commits à frente, mas nenhum arquivo alterado. Esses casos são ruído de
+  sincronização entre branches de ambiente.
 - A automação não aprova PRs.
 - O repositório deve manter `Workflow permissions` em `Read and write` e
   `Allow GitHub Actions to create and approve pull requests` habilitado para que
@@ -70,3 +73,6 @@ feature/* -> development -> homologation -> main
   via `workflow_dispatch` para reduzir essa fricção. Para execução sem
   aprovação manual em cenários mais restritivos, configurar um token de
   automação em `MYKEYS_AUTOMATION_TOKEN`.
+- Se aparecer um PR de promoção sem arquivos alterados, ele deve ser fechado
+  como no-op e a automação deve ser revisada antes de seguir abrindo novas
+  promoções.

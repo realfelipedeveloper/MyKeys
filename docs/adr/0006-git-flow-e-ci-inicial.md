@@ -66,7 +66,9 @@ Adicionar `tools/check-promotions.mjs` para validar que a automação:
 - promove `feature/*` para `development`;
 - promove `development` para `homologation`;
 - promove `homologation` para `main`;
-- verifica diferenças antes de abrir PR;
+- verifica commits à frente e arquivos alterados antes de abrir PR;
+- ignora promoções sem diff de arquivos, mesmo quando houver commits de merge à
+  frente;
 - evita PR duplicado;
 - dispara `MyKeys CI` após criar ou detectar PR com mudanças pendentes;
 - publica o status `validate workspace` após o CI real passar;
@@ -110,6 +112,8 @@ falso para o fluxo `development -> homologation -> main`.
   `GITHUB_TOKEN`.
 - A automação materializa o resultado do CI como commit status obrigatório
   `validate workspace`, sempre apontando para o run real aprovado.
+- Promoções vazias geradas apenas por commits de sincronização deixam de abrir
+  PRs de ambiente.
 - O CI usa actions oficiais em runtime Node 24 e desabilita cache automático do
   `setup-node`.
 - A concorrência do CI não cancela validações de `push` quando a automação
@@ -134,6 +138,9 @@ falso para o fluxo `development -> homologation -> main`.
   merge próprios.
 - A automação de promoção espera o CI terminar, então a abertura/atualização de
   PR pode levar mais tempo.
+- Um merge reverso entre branches de ambiente ainda pode existir no histórico,
+  mas não deve gerar nova promoção quando a árvore de arquivos já estiver
+  alinhada.
 
 ## Riscos
 

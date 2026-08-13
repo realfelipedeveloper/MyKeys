@@ -2,7 +2,7 @@
   "id": "SPEC-001",
   "title": "Fundação da Plataforma MyKeys",
   "status": "in_progress",
-  "currentTask": "TASK-006",
+  "currentTask": "TASK-016",
   "updatedAt": "2026-08-13",
   "services": [
     "web",
@@ -72,6 +72,7 @@
     "strict status check policy blocking promotion PRs",
     "feature pull request automation drift",
     "duplicate promotion pull requests",
+    "empty promotion pull requests caused by merge-only branch drift",
     "GITHUB_TOKEN approval gate for automation-created pull requests",
     "GitHub Actions pull request approval permission overreach",
     "CI not triggered for automation-created pull requests",
@@ -102,7 +103,8 @@
     "promotion-status-materialization",
     "git-flow-branch-validation",
     "feature-pr-automation-config",
-    "promotion-workflow-config"
+    "promotion-workflow-config",
+    "promotion-noop-diff-validation"
   ],
   "requiredDocs": [
     "README",

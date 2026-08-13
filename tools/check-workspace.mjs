@@ -142,6 +142,16 @@ assert.match(
   /actions: write/,
   "promotion workflow must be allowed to trigger CI after opening PRs",
 );
+assert.match(
+  promotionsWorkflow,
+  /CHANGED_FILES="\$\(gh api "\$\{COMPARE_ENDPOINT\}" --jq '\.files \| length'\)"/,
+  "promotion workflow must inspect changed files before creating PRs",
+);
+assert.match(
+  promotionsWorkflow,
+  /"\$AHEAD_BY" == "0" \|\| "\$CHANGED_FILES" == "0"/,
+  "promotion workflow must skip promotion PRs without changed files",
+);
 assert.match(promotionsWorkflow, /gh workflow run "MyKeys CI"/);
 
 for (const packageName of mykeysPackageNames) {
