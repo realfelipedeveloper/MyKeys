@@ -41,6 +41,8 @@ infraestrutura, criando branches intermediárias e um CI inicial.
   branch de feature.
 - Criar automação para abrir PR de `development` para `homologation` e de
   `homologation` para `main` após merges.
+- Ignorar promoções sem arquivos alterados, mesmo quando houver commits à frente
+  por merges entre branches de ambiente.
 - Habilitar no repositório permissão de workflow para criação de PRs pelo
   GitHub Actions.
 - Disparar `MyKeys CI` pela automação após criar ou detectar PR com mudanças
@@ -77,13 +79,18 @@ O fluxo também passou a exigir textos de PR e merge para cada etapa de promoç�
 até `main`.
 O workflow `MyKeys Promotions` abre automaticamente PRs de feature e o próximo
 PR de promoção quando `feature/*`, `development` ou `homologation` recebem
-novos commits.
+novos commits com arquivos alterados em relação ao destino.
 O CI separa a concorrência por evento para que validações manuais disparadas
 pela automação não cancelem validações de `push`. O ruleset remoto exige o
 check `validate workspace`, mas mantém desabilitada a política estrita de
 branch atualizada para preservar o fluxo de promoção.
 Quando o CI manual passa, a automação publica o commit status obrigatório no SHA
 promovido e aponta para o run real do GitHub Actions.
+
+Em 13 de agosto de 2026, a automação foi ajustada para não abrir PR de promoção
+quando `development`, `homologation` ou `main` divergem apenas por commits de
+merge, sem diff de arquivos. Essa correção evita PRs vazios e ciclos de
+promoção após sincronizações manuais.
 
 ## Verificações de segurança
 

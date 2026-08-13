@@ -56,8 +56,23 @@ assert.match(
 );
 assert.match(
   workflow,
-  /gh api "repos\/\$\{GH_REPO\}\/compare\/\$\{TARGET\}\.\.\.\$\{SOURCE\}"/,
+  /COMPARE_ENDPOINT="repos\/\$\{GH_REPO\}\/compare\/\$\{TARGET\}\.\.\.\$\{SOURCE\}"/,
   "promotion workflow must compare source and target before creating a PR",
+);
+assert.match(
+  workflow,
+  /AHEAD_BY="\$\(gh api "\$\{COMPARE_ENDPOINT\}" --jq '\.ahead_by'\)"/,
+  "promotion workflow must inspect commits ahead before creating a PR",
+);
+assert.match(
+  workflow,
+  /CHANGED_FILES="\$\(gh api "\$\{COMPARE_ENDPOINT\}" --jq '\.files \| length'\)"/,
+  "promotion workflow must inspect changed files before creating a PR",
+);
+assert.match(
+  workflow,
+  /"\$AHEAD_BY" == "0" \|\| "\$CHANGED_FILES" == "0"/,
+  "promotion workflow must skip no-op promotion PRs without changed files",
 );
 assert.match(
   workflow,
