@@ -138,6 +138,29 @@ pnpm check:compose
 docker compose --env-file .env.example -f compose.yaml config
 ```
 
+### SPEC-001 / TASK-006
+
+Status: concluida.
+
+PostgreSQL local adicionado:
+
+- servico `postgres` no `compose.yaml`;
+- imagem oficial `postgres:18-alpine`;
+- porta host `43130` publicada apenas em `127.0.0.1`;
+- banco e usuario locais `mykeys`;
+- autenticacao local `trust` para evitar secrets no repositorio nesta fase;
+- volume nomeado `mykeys_postgres_data`;
+- healthcheck com `pg_isready`;
+- validacao local de imagem, porta, volume, rede e healthcheck.
+
+Comandos principais:
+
+```bash
+pnpm check:compose
+docker compose --env-file .env.example -f compose.yaml config
+docker compose --env-file .env.example -f compose.yaml up -d postgres
+```
+
 ### SPEC-001 / TASK-016
 
 Status: concluida antecipadamente.

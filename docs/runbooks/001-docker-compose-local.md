@@ -29,14 +29,14 @@ docker compose --env-file .env.example -f compose.yaml config
 
 ## Subida local
 
-Na `TASK-005`, ainda nao ha serviços reais para subir. As proximas tarefas
-adicionam PostgreSQL, Redis, Mailpit e MinIO.
-
-Quando houver serviços, use:
+A `TASK-006` adicionou PostgreSQL. Para subir os servicos disponiveis, use:
 
 ```bash
-docker compose --env-file .env -f compose.yaml up
+docker compose --env-file .env.example -f compose.yaml up -d postgres
 ```
+
+Para uso com variaveis locais, copie `.env.example` para `.env` e ajuste apenas
+valores nao sensiveis.
 
 ## Cuidados
 
@@ -44,3 +44,5 @@ docker compose --env-file .env -f compose.yaml up
 - Nao usar portas comuns como `3000`, `3001`, `5432`, `6379` ou `8080` no host.
 - Nao inserir segredos reais em `.env.example`.
 - Nao executar comandos destrutivos globais de Docker.
+- Nao usar `docker compose down -v` sem decisao explicita de descarte dos dados
+  locais.

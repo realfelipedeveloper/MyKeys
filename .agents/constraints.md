@@ -7,6 +7,10 @@
 - Não usar Tailwind fora dos tokens do Design System.
 - Não adicionar dependências sem justificativa.
 - Não alterar testes para mascarar falhas.
+- PostgreSQL local deve permanecer em `127.0.0.1:${MYKEYS_POSTGRES_PORT}` e nao
+  deve usar a porta host `5432`.
+- `MYKEYS_POSTGRES_AUTH_METHOD=trust` e permitido apenas para desenvolvimento
+  local, sem dados reais e sem ambientes remotos.
 - Mensagens de commit devem ser escritas sempre em português.
 - Fluxo Git obrigatório: `feature/*` -> `development` -> `homologation` ->
   `main`.
