@@ -59,3 +59,9 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
   run aprovado para satisfazer o ruleset sem fingir validação.
 - 2026-08-12: Documentos legados que mencionem `develop` devem ser atualizados
   para o fluxo atual `development -> homologation -> main`.
+- 2026-08-13: A imagem oficial `postgres` em PostgreSQL 18 usa `PGDATA`
+  versionado em `/var/lib/postgresql/18/docker`; volumes devem montar
+  `/var/lib/postgresql`, nao o caminho antigo `/var/lib/postgresql/data`.
+- 2026-08-13: Para infraestrutura local sem secrets commitados, PostgreSQL pode
+  usar `POSTGRES_HOST_AUTH_METHOD=trust` somente quando publicado em loopback e
+  sem dados reais.
