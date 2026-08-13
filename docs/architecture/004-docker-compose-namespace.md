@@ -30,9 +30,12 @@ Ela usa labels:
 
 ## Serviços
 
-Na `TASK-005`, `services` permanece vazio. Serviços reais entram nas tarefas:
+A `TASK-006` adicionou o primeiro servico real:
 
-- `TASK-006`: PostgreSQL;
+- `postgres`: PostgreSQL local.
+
+Servicos restantes entram nas tarefas:
+
 - `TASK-007`: Redis;
 - `TASK-008`: Mailpit;
 - `TASK-009`: MinIO.
@@ -60,7 +63,9 @@ O comando `pnpm check:compose` valida:
 
 - parse do Compose via Docker CLI;
 - nome do projeto `mykeys`;
-- ausencia de serviços reais antes da task correta;
+- PostgreSQL como unico servico real nesta etapa;
 - ausencia de `container_name`;
 - ausencia de portas comuns proibidas no Compose;
-- portas oficiais da SPEC-001 em `.env.example`.
+- portas oficiais da SPEC-001 em `.env.example`;
+- bind do PostgreSQL apenas em `127.0.0.1`;
+- volume nomeado e healthcheck do PostgreSQL.

@@ -6,6 +6,10 @@ const composePath = "compose.yaml";
 const envExamplePath = ".env.example";
 const expectedProjectName = "mykeys";
 const expectedNetworkName = "mykeys_private";
+const expectedPostgresImage = "postgres:18-alpine";
+const expectedPostgresHostPort = "43130";
+const expectedPostgresContainerPort = 5432;
+const expectedPostgresVolumeName = "mykeys_postgres_data";
 const forbiddenHostPorts = new Set(["3000", "3001", "5432", "6379", "8080"]);
 const expectedPorts = {
   MYKEYS_WEB_PORT: "43110",
@@ -32,18 +36,15 @@ assert.equal(
   expectedProjectName,
   "Docker Compose project name must be the MyKeys namespace",
 );
-assert.deepEqual(
-  composeConfig.services ?? {},
-  {},
-  "TASK-005 must not add real services before TASK-006..TASK-009",
-);
+const services = composeConfig.services ?? {};
+assert.deepEqual(Object.keys(services).sort(), ["postgres"], "TASK-006 must add only PostgreSQL");
 
 assert.match(
   composeSource,
   /^name:\s+\$\{MYKEYS_COMPOSE_PROJECT_NAME:-mykeys\}/m,
   "compose.yaml must expose a configurable MyKeys project name",
 );
-assert.match(composeSource, /^services:\s+\{\}/m, "TASK-005 compose must remain service-free");
+assert.match(composeSource, /^\s+postgres:\s*$/m, "compose must define the postgres service");
 assert.doesNotMatch(
   composeSource,
   /\bcontainer_name\s*:/,
@@ -57,9 +58,28 @@ assert.match(
 );
 assert.match(composeSource, /br\.com\.abbatech\.project:\s+mykeys/);
 assert.match(composeSource, /br\.com\.abbatech\.namespace:\s+mykeys/);
+assert.match(
+  composeSource,
+  /127\.0\.0\.1:\$\{MYKEYS_POSTGRES_PORT:-43130\}:5432/,
+  "PostgreSQL must bind only to localhost and the SPEC-001 host port",
+);
+assert.match(
+  composeSource,
+  /PGDATA:\s+\/var\/lib\/postgresql\/18\/docker/,
+  "PostgreSQL 18 must use the version-specific PGDATA path",
+);
+assert.match(composeSource, /pg_isready/, "PostgreSQL must define a healthcheck");
+assert.match(composeSource, /mykeys_postgres_data:/, "PostgreSQL must use a named volume");
 
 assert.equal(envExample.MYKEYS_COMPOSE_PROJECT_NAME, expectedProjectName);
 assert.equal(envExample.MYKEYS_DOCKER_NETWORK, expectedNetworkName);
+assert.equal(envExample.MYKEYS_POSTGRES_IMAGE, expectedPostgresImage);
+assert.equal(envExample.MYKEYS_POSTGRES_DB, expectedProjectName);
+assert.equal(envExample.MYKEYS_POSTGRES_USER, expectedProjectName);
+assert.equal(envExample.MYKEYS_POSTGRES_AUTH_METHOD, "trust");
+assert.equal(envExample.MYKEYS_POSTGRES_DATA_VOLUME, expectedPostgresVolumeName);
+
+assertPostgresService(services.postgres);
 
 for (const [name, port] of Object.entries(expectedPorts)) {
   assert.equal(envExample[name], port, `${name} must use the SPEC-001 non-default port`);
@@ -75,6 +95,35 @@ for (const forbiddenPort of forbiddenHostPorts) {
 }
 
 console.log("MyKeys Docker Compose namespace is valid.");
+
+function assertPostgresService(service) {
+  assert.ok(service, "postgres service must exist");
+  assert.equal(service.image, expectedPostgresImage);
+  assert.equal(service.restart, "unless-stopped");
+  assert.ok(
+    Object.hasOwn(service.networks ?? {}, "mykeys_private"),
+    "postgres must join the MyKeys private network",
+  );
+
+  assert.equal(service.environment?.POSTGRES_DB, expectedProjectName);
+  assert.equal(service.environment?.POSTGRES_USER, expectedProjectName);
+  assert.equal(service.environment?.POSTGRES_HOST_AUTH_METHOD, "trust");
+  assert.equal(service.environment?.PGDATA, "/var/lib/postgresql/18/docker");
+
+  const postgresPort = service.ports?.[0];
+  assert.ok(postgresPort, "postgres service must publish one localhost port");
+  assert.equal(postgresPort.host_ip, "127.0.0.1");
+  assert.equal(postgresPort.published, expectedPostgresHostPort);
+  assert.equal(postgresPort.target, expectedPostgresContainerPort);
+  assert.ok(!forbiddenHostPorts.has(postgresPort.published));
+
+  assert.ok(service.healthcheck?.test?.join(" ").includes("pg_isready"));
+  assert.deepEqual(service.volumes?.[0]?.target, "/var/lib/postgresql");
+
+  const volumes = composeConfig.volumes ?? {};
+  assert.ok(volumes.mykeys_postgres_data, "postgres named volume must exist");
+  assert.equal(volumes.mykeys_postgres_data.name, expectedPostgresVolumeName);
+}
 
 function readComposeConfig() {
   const result = spawnSync(

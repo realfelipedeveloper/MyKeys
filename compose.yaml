@@ -1,6 +1,32 @@
 name: ${MYKEYS_COMPOSE_PROJECT_NAME:-mykeys}
 
-services: {}
+services:
+  postgres:
+    image: ${MYKEYS_POSTGRES_IMAGE:-postgres:18-alpine}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${MYKEYS_POSTGRES_DB:-mykeys}
+      POSTGRES_USER: ${MYKEYS_POSTGRES_USER:-mykeys}
+      POSTGRES_HOST_AUTH_METHOD: ${MYKEYS_POSTGRES_AUTH_METHOD:-trust}
+      PGDATA: /var/lib/postgresql/18/docker
+    ports:
+      - "127.0.0.1:${MYKEYS_POSTGRES_PORT:-43130}:5432"
+    volumes:
+      - mykeys_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}" -h 127.0.0.1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - mykeys_private
+    labels:
+      br.com.abbatech.project: mykeys
+      br.com.abbatech.namespace: mykeys
+      br.com.abbatech.service: postgres
 
 networks:
   mykeys_private:
@@ -8,3 +34,11 @@ networks:
     labels:
       br.com.abbatech.project: mykeys
       br.com.abbatech.namespace: mykeys
+
+volumes:
+  mykeys_postgres_data:
+    name: ${MYKEYS_POSTGRES_DATA_VOLUME:-mykeys_postgres_data}
+    labels:
+      br.com.abbatech.project: mykeys
+      br.com.abbatech.namespace: mykeys
+      br.com.abbatech.service: postgres
