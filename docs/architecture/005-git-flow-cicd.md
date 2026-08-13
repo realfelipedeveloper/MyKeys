@@ -33,8 +33,10 @@ promoção:
 - push/merge em `development` abre PR para `homologation`;
 - push/merge em `homologation` abre PR para `main`.
 
-A automação compara origem e destino, não cria PR duplicado e não executa merge
-automaticamente.
+A automação compara origem e destino, não cria PR duplicado, não cria PR quando
+a comparação não possui arquivos alterados e não executa merge automaticamente.
+Isso evita promoções vazias geradas apenas por commits de merge entre branches
+de ambiente.
 
 Para permitir criação automática de PR com `GITHUB_TOKEN`, o repositório deve
 manter `Workflow permissions` em `Read and write` e permitir que GitHub Actions

@@ -65,3 +65,6 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
 - 2026-08-13: Para infraestrutura local sem secrets commitados, PostgreSQL pode
   usar `POSTGRES_HOST_AUTH_METHOD=trust` somente quando publicado em loopback e
   sem dados reais.
+- 2026-08-13: Promoções automáticas não devem usar apenas `ahead_by` como sinal
+  de mudança; merges entre branches de ambiente podem deixar commits à frente
+  sem diff de arquivos e gerar PRs vazios.

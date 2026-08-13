@@ -24,3 +24,6 @@
   próxima promoção sem executar merge automático.
 - Após push em `feature/*`, abrir automaticamente PR para `development` sem
   executar merge automático.
+- A automação de promoção não deve abrir PR quando a comparação entre origem e
+  destino não tiver arquivos alterados, mesmo que haja commits de merge à
+  frente.
