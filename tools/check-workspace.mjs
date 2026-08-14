@@ -23,6 +23,7 @@ const composeYaml = await readFile("compose.yaml", "utf8");
 const envExample = await readFile(".env.example", "utf8");
 const ciWorkflow = await readFile(".github/workflows/ci.yml", "utf8");
 const promotionsWorkflow = await readFile(".github/workflows/promotions.yml", "utf8");
+const legacyOwnerPattern = new RegExp(["abba", "tech"].join(""), "i");
 
 const expectedDevDependencies = {
   "@eslint/js": "10.0.1",
@@ -109,6 +110,9 @@ assert.match(composeYaml, /^\s+postgres:\s*$/m);
 assert.match(composeYaml, /^\s+redis:\s*$/m);
 assert.doesNotMatch(composeYaml, /\bcontainer_name\s*:/);
 assert.match(composeYaml, /MYKEYS_DOCKER_NETWORK:-mykeys_private/);
+assert.doesNotMatch(composeYaml, legacyOwnerPattern);
+assert.match(composeYaml, /io\.github\.realfelipedeveloper\.project:\s+mykeys/);
+assert.match(composeYaml, /io\.github\.realfelipedeveloper\.namespace:\s+mykeys/);
 assert.match(composeYaml, /postgres:18-alpine/);
 assert.match(composeYaml, /127\.0\.0\.1:\$\{MYKEYS_POSTGRES_PORT:-43130\}:5432/);
 assert.match(composeYaml, /PGDATA:\s+\/var\/lib\/postgresql\/18\/docker/);
