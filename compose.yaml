@@ -62,6 +62,33 @@ services:
       io.github.realfelipedeveloper.namespace: mykeys
       io.github.realfelipedeveloper.service: redis
 
+  mailpit:
+    image: ${MYKEYS_MAILPIT_IMAGE:-axllent/mailpit:v1.30.7}
+    restart: unless-stopped
+    user: "65534:65534"
+    environment:
+      MP_MAX_MESSAGES: ${MYKEYS_MAILPIT_MAX_MESSAGES:-500}
+    ports:
+      - "127.0.0.1:${MYKEYS_MAIL_SMTP_PORT:-43150}:1025"
+      - "127.0.0.1:${MYKEYS_MAIL_UI_PORT:-43151}:8025"
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - http://127.0.0.1:8025/readyz
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mykeys_private
+    labels:
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
+      io.github.realfelipedeveloper.service: mailpit
+
 networks:
   mykeys_private:
     name: ${MYKEYS_DOCKER_NETWORK:-mykeys_private}

@@ -30,14 +30,14 @@ Ela usa labels:
 
 ## Serviços
 
-Ate a `TASK-007`, os servicos reais sao:
+Ate a `TASK-008`, os servicos reais sao:
 
 - `postgres`: PostgreSQL local.
 - `redis`: Redis local.
+- `mailpit`: SMTP e UI local para captura de e-mails de desenvolvimento.
 
 Servicos restantes entram nas tarefas:
 
-- `TASK-008`: Mailpit;
 - `TASK-009`: MinIO.
 
 ## Portas
@@ -69,6 +69,8 @@ O comando `pnpm check:compose` valida:
 - portas oficiais da SPEC-001 em `.env.example`;
 - bind do PostgreSQL apenas em `127.0.0.1`;
 - bind do Redis apenas em `127.0.0.1`;
+- bind do SMTP e UI do Mailpit apenas em `127.0.0.1`;
 - volumes nomeados e healthchecks de PostgreSQL e Redis.
+- Mailpit efemero, sem volume persistente na `TASK-008`;
 - labels de propriedade vinculadas a `realfelipedeveloper`, sem referencias
   legadas a organizacoes externas.
