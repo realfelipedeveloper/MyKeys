@@ -68,3 +68,6 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
 - 2026-08-13: Promoções automáticas não devem usar apenas `ahead_by` como sinal
   de mudança; merges entre branches de ambiente podem deixar commits à frente
   sem diff de arquivos e gerar PRs vazios.
+- 2026-08-13: Redis local deve ser publicado apenas em loopback, com porta host
+  nao padrao e sem segredos em `.env.example`; qualquer uso real precisa
+  reavaliar licenca, autenticacao, ACLs e proibicao de plaintext.
