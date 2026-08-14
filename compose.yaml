@@ -24,9 +24,9 @@ services:
     networks:
       - mykeys_private
     labels:
-      br.com.abbatech.project: mykeys
-      br.com.abbatech.namespace: mykeys
-      br.com.abbatech.service: postgres
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
+      io.github.realfelipedeveloper.service: postgres
 
   redis:
     image: ${MYKEYS_REDIS_IMAGE:-redis:8.10-alpine}
@@ -58,27 +58,27 @@ services:
     networks:
       - mykeys_private
     labels:
-      br.com.abbatech.project: mykeys
-      br.com.abbatech.namespace: mykeys
-      br.com.abbatech.service: redis
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
+      io.github.realfelipedeveloper.service: redis
 
 networks:
   mykeys_private:
     name: ${MYKEYS_DOCKER_NETWORK:-mykeys_private}
     labels:
-      br.com.abbatech.project: mykeys
-      br.com.abbatech.namespace: mykeys
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
 
 volumes:
   mykeys_postgres_data:
     name: ${MYKEYS_POSTGRES_DATA_VOLUME:-mykeys_postgres_data}
     labels:
-      br.com.abbatech.project: mykeys
-      br.com.abbatech.namespace: mykeys
-      br.com.abbatech.service: postgres
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
+      io.github.realfelipedeveloper.service: postgres
   mykeys_redis_data:
     name: ${MYKEYS_REDIS_DATA_VOLUME:-mykeys_redis_data}
     labels:
-      br.com.abbatech.project: mykeys
-      br.com.abbatech.namespace: mykeys
-      br.com.abbatech.service: redis
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
+      io.github.realfelipedeveloper.service: redis
