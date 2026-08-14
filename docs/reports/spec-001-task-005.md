@@ -33,6 +33,8 @@ serviços reais antes das tarefas especificas.
 - Manter `services: {}` na `TASK-005`; serviços reais entram nas tasks
   seguintes.
 - Criar rede privada configuravel `mykeys_private`.
+- Usar labels Docker com prefixo `io.github.realfelipedeveloper` para vincular
+  a propriedade do repositório ao usuario correto.
 - Validar Compose via Docker CLI e gate `pnpm check:compose`.
 - Registrar regra operacional de textos de PR e merge em português.
 
@@ -61,6 +63,7 @@ sem serviços reais, conforme o escopo da `TASK-005`.
 - `.env.example` nao contem segredos reais.
 - `compose.yaml` nao usa `container_name`.
 - `compose.yaml` nao mapeia portas comuns proibidas.
+- `compose.yaml` nao contem labels legadas de organizacao externa.
 - `docker compose config` valida a sintaxe sem subir containers.
 
 ## Riscos residuais

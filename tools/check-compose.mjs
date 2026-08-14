@@ -14,6 +14,7 @@ const expectedRedisImage = "redis:8.10-alpine";
 const expectedRedisHostPort = "43140";
 const expectedRedisContainerPort = 6379;
 const expectedRedisVolumeName = "mykeys_redis_data";
+const expectedLabelPrefix = "io.github.realfelipedeveloper";
 const forbiddenHostPorts = new Set(["3000", "3001", "5432", "6379", "8080"]);
 const expectedPorts = {
   MYKEYS_WEB_PORT: "43110",
@@ -34,6 +35,7 @@ const composeSource = await readFile(composePath, "utf8");
 const envExampleSource = await readFile(envExamplePath, "utf8");
 const composeConfig = readComposeConfig();
 const envExample = parseEnvExample(envExampleSource);
+const legacyOwnerPattern = new RegExp(["abba", "tech"].join(""), "i");
 
 assert.equal(
   composeConfig.name,
@@ -65,8 +67,13 @@ assert.match(
   /\$\{MYKEYS_DOCKER_NETWORK:-mykeys_private\}/,
   "compose network name must be configurable",
 );
-assert.match(composeSource, /br\.com\.abbatech\.project:\s+mykeys/);
-assert.match(composeSource, /br\.com\.abbatech\.namespace:\s+mykeys/);
+assert.doesNotMatch(
+  composeSource,
+  legacyOwnerPattern,
+  "compose labels must not use legacy external ownership",
+);
+assert.match(composeSource, /io\.github\.realfelipedeveloper\.project:\s+mykeys/);
+assert.match(composeSource, /io\.github\.realfelipedeveloper\.namespace:\s+mykeys/);
 assert.match(
   composeSource,
   /127\.0\.0\.1:\$\{MYKEYS_POSTGRES_PORT:-43130\}:5432/,
@@ -100,6 +107,7 @@ assert.equal(envExample.MYKEYS_REDIS_DATA_VOLUME, expectedRedisVolumeName);
 
 assertPostgresService(services.postgres);
 assertRedisService(services.redis);
+assertNetwork(composeConfig.networks?.mykeys_private);
 
 for (const [name, port] of Object.entries(expectedPorts)) {
   assert.equal(envExample[name], port, `${name} must use the SPEC-001 non-default port`);
@@ -124,6 +132,7 @@ function assertPostgresService(service) {
     Object.hasOwn(service.networks ?? {}, "mykeys_private"),
     "postgres must join the MyKeys private network",
   );
+  assertLabels(service.labels, "postgres");
 
   assert.equal(service.environment?.POSTGRES_DB, expectedProjectName);
   assert.equal(service.environment?.POSTGRES_USER, expectedProjectName);
@@ -143,6 +152,7 @@ function assertPostgresService(service) {
   const volumes = composeConfig.volumes ?? {};
   assert.ok(volumes.mykeys_postgres_data, "postgres named volume must exist");
   assert.equal(volumes.mykeys_postgres_data.name, expectedPostgresVolumeName);
+  assertLabels(volumes.mykeys_postgres_data.labels, "postgres");
 }
 
 function assertRedisService(service) {
@@ -153,6 +163,7 @@ function assertRedisService(service) {
     Object.hasOwn(service.networks ?? {}, "mykeys_private"),
     "redis must join the MyKeys private network",
   );
+  assertLabels(service.labels, "redis");
 
   const redisPort = service.ports?.[0];
   assert.ok(redisPort, "redis service must publish one localhost port");
@@ -172,6 +183,18 @@ function assertRedisService(service) {
   const volumes = composeConfig.volumes ?? {};
   assert.ok(volumes.mykeys_redis_data, "redis named volume must exist");
   assert.equal(volumes.mykeys_redis_data.name, expectedRedisVolumeName);
+  assertLabels(volumes.mykeys_redis_data.labels, "redis");
+}
+
+function assertNetwork(network) {
+  assert.equal(network?.labels?.[`${expectedLabelPrefix}.project`], expectedProjectName);
+  assert.equal(network?.labels?.[`${expectedLabelPrefix}.namespace`], expectedProjectName);
+}
+
+function assertLabels(labels, serviceName) {
+  assert.equal(labels?.[`${expectedLabelPrefix}.project`], expectedProjectName);
+  assert.equal(labels?.[`${expectedLabelPrefix}.namespace`], expectedProjectName);
+  assert.equal(labels?.[`${expectedLabelPrefix}.service`], serviceName);
 }
 
 function readComposeConfig() {

@@ -15,6 +15,8 @@
   usar a porta host `6379`.
 - Redis nao deve armazenar segredos descriptografados, senha-mestra, chaves,
   recovery keys, CVV ou tokens sensiveis.
+- Labels Docker devem usar o prefixo `io.github.realfelipedeveloper` e nao
+  podem conter referencias legadas a organizacoes externas.
 - Mensagens de commit devem ser escritas sempre em português.
 - Fluxo Git obrigatório: `feature/*` -> `development` -> `homologation` ->
   `main`.
