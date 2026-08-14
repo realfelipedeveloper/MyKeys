@@ -183,6 +183,28 @@ docker compose --env-file .env.example -f compose.yaml config
 docker compose --env-file .env.example -f compose.yaml up -d redis
 ```
 
+### SPEC-001 / TASK-008
+
+Status: concluida.
+
+Mailpit local adicionado:
+
+- servico `mailpit` no `compose.yaml`;
+- imagem oficial `axllent/mailpit:v1.30.7`;
+- SMTP publicado apenas em `127.0.0.1:43150`;
+- UI publicada apenas em `127.0.0.1:43151`;
+- healthcheck HTTP em `/readyz`;
+- execucao como usuario nao-root `65534:65534`;
+- captura efemera sem volume persistente nesta etapa.
+
+Comandos principais:
+
+```bash
+pnpm check:compose
+docker compose --env-file .env.example -f compose.yaml config
+docker compose --env-file .env.example -f compose.yaml up -d mailpit
+```
+
 ### SPEC-001 / TASK-016
 
 Status: concluida antecipadamente.
@@ -218,6 +240,7 @@ pnpm build
 - Banco: PostgreSQL
 - ORM: Prisma
 - Cache e filas: Redis + BullMQ
+- E-mail local: Mailpit
 - Infra local: Docker Compose
 - Testes: Jest, Testing Library, Supertest, Testcontainers, Playwright, Pact, StrykerJS, fast-check, k6 e OWASP ZAP
 - Arquitetura: microsserviços pragmáticos, DDD pragmático, Clean Architecture, SOLID, Ports and Adapters

@@ -17,6 +17,13 @@
   recovery keys, CVV ou tokens sensiveis.
 - Labels Docker devem usar o prefixo `io.github.realfelipedeveloper` e nao
   podem conter referencias legadas a organizacoes externas.
+- Mailpit local deve permanecer em
+  `127.0.0.1:${MYKEYS_MAIL_SMTP_PORT}` e
+  `127.0.0.1:${MYKEYS_MAIL_UI_PORT}`, sem usar as portas host `1025` ou
+  `8025`.
+- Mailpit nao deve persistir caixa de e-mail nem configurar relay externo na
+  `TASK-008`.
+- Mailpit nao deve receber e-mails reais, dados pessoais reais ou tokens reais.
 - Mensagens de commit devem ser escritas sempre em português.
 - Fluxo Git obrigatório: `feature/*` -> `development` -> `homologation` ->
   `main`.
