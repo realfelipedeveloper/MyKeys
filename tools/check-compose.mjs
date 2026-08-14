@@ -14,6 +14,12 @@ const expectedRedisImage = "redis:8.10-alpine";
 const expectedRedisHostPort = "43140";
 const expectedRedisContainerPort = 6379;
 const expectedRedisVolumeName = "mykeys_redis_data";
+const expectedMailpitImage = "axllent/mailpit:v1.30.7";
+const expectedMailpitSmtpHostPort = "43150";
+const expectedMailpitUiHostPort = "43151";
+const expectedMailpitSmtpContainerPort = 1025;
+const expectedMailpitUiContainerPort = 8025;
+const expectedMailpitMaxMessages = "500";
 const expectedLabelPrefix = "io.github.realfelipedeveloper";
 const forbiddenHostPorts = new Set(["3000", "3001", "5432", "6379", "8080"]);
 const expectedPorts = {
@@ -45,8 +51,8 @@ assert.equal(
 const services = composeConfig.services ?? {};
 assert.deepEqual(
   Object.keys(services).sort(),
-  ["postgres", "redis"],
-  "TASK-007 must add PostgreSQL and Redis only",
+  ["mailpit", "postgres", "redis"],
+  "TASK-008 must add PostgreSQL, Redis and Mailpit only",
 );
 
 assert.match(
@@ -56,6 +62,7 @@ assert.match(
 );
 assert.match(composeSource, /^\s+postgres:\s*$/m, "compose must define the postgres service");
 assert.match(composeSource, /^\s+redis:\s*$/m, "compose must define the redis service");
+assert.match(composeSource, /^\s+mailpit:\s*$/m, "compose must define the mailpit service");
 assert.doesNotMatch(
   composeSource,
   /\bcontainer_name\s*:/,
@@ -94,6 +101,17 @@ assert.match(
 assert.match(composeSource, /redis-cli/, "Redis must define a healthcheck");
 assert.match(composeSource, /--appendonly/, "Redis must enable local append-only persistence");
 assert.match(composeSource, /mykeys_redis_data:/, "Redis must use a named volume");
+assert.match(
+  composeSource,
+  /127\.0\.0\.1:\$\{MYKEYS_MAIL_SMTP_PORT:-43150\}:1025/,
+  "Mailpit SMTP must bind only to localhost and the SPEC-001 host port",
+);
+assert.match(
+  composeSource,
+  /127\.0\.0\.1:\$\{MYKEYS_MAIL_UI_PORT:-43151\}:8025/,
+  "Mailpit UI must bind only to localhost and the SPEC-001 host port",
+);
+assert.match(composeSource, /\/readyz/, "Mailpit must define a readiness healthcheck");
 
 assert.equal(envExample.MYKEYS_COMPOSE_PROJECT_NAME, expectedProjectName);
 assert.equal(envExample.MYKEYS_DOCKER_NETWORK, expectedNetworkName);
@@ -104,9 +122,12 @@ assert.equal(envExample.MYKEYS_POSTGRES_AUTH_METHOD, "trust");
 assert.equal(envExample.MYKEYS_POSTGRES_DATA_VOLUME, expectedPostgresVolumeName);
 assert.equal(envExample.MYKEYS_REDIS_IMAGE, expectedRedisImage);
 assert.equal(envExample.MYKEYS_REDIS_DATA_VOLUME, expectedRedisVolumeName);
+assert.equal(envExample.MYKEYS_MAILPIT_IMAGE, expectedMailpitImage);
+assert.equal(envExample.MYKEYS_MAILPIT_MAX_MESSAGES, expectedMailpitMaxMessages);
 
 assertPostgresService(services.postgres);
 assertRedisService(services.redis);
+assertMailpitService(services.mailpit);
 assertNetwork(composeConfig.networks?.mykeys_private);
 
 for (const [name, port] of Object.entries(expectedPorts)) {
@@ -184,6 +205,41 @@ function assertRedisService(service) {
   assert.ok(volumes.mykeys_redis_data, "redis named volume must exist");
   assert.equal(volumes.mykeys_redis_data.name, expectedRedisVolumeName);
   assertLabels(volumes.mykeys_redis_data.labels, "redis");
+}
+
+function assertMailpitService(service) {
+  assert.ok(service, "mailpit service must exist");
+  assert.equal(service.image, expectedMailpitImage);
+  assert.equal(service.restart, "unless-stopped");
+  assert.equal(service.user, "65534:65534");
+  assert.ok(
+    Object.hasOwn(service.networks ?? {}, "mykeys_private"),
+    "mailpit must join the MyKeys private network",
+  );
+  assertLabels(service.labels, "mailpit");
+
+  assert.equal(service.environment?.MP_MAX_MESSAGES, expectedMailpitMaxMessages);
+
+  const ports = service.ports ?? [];
+  assert.equal(ports.length, 2, "mailpit must publish SMTP and UI localhost ports");
+
+  const smtpPort = ports.find((port) => port.target === expectedMailpitSmtpContainerPort);
+  assert.ok(smtpPort, "mailpit SMTP port must be published");
+  assert.equal(smtpPort.host_ip, "127.0.0.1");
+  assert.equal(smtpPort.published, expectedMailpitSmtpHostPort);
+  assert.ok(!forbiddenHostPorts.has(smtpPort.published));
+
+  const uiPort = ports.find((port) => port.target === expectedMailpitUiContainerPort);
+  assert.ok(uiPort, "mailpit UI port must be published");
+  assert.equal(uiPort.host_ip, "127.0.0.1");
+  assert.equal(uiPort.published, expectedMailpitUiHostPort);
+  assert.ok(!forbiddenHostPorts.has(uiPort.published));
+
+  const healthcheck = service.healthcheck?.test?.join(" ") ?? "";
+  assert.match(healthcheck, /wget/);
+  assert.match(healthcheck, /127\.0\.0\.1:8025\/readyz/);
+
+  assert.ok(!service.volumes, "mailpit must stay ephemeral in TASK-008");
 }
 
 function assertNetwork(network) {
