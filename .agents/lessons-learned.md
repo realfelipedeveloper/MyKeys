@@ -75,3 +75,6 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
   `io.github.realfelipedeveloper.*`; referencias legadas a organizacoes
   externas precisam ser barradas por validacao para nao voltarem em tasks
   futuras.
+- 2026-08-14: Mailpit local deve ficar efemero na fundacao; persistir a caixa
+  de e-mail aumenta risco de retenção de dados pessoais, links de magic login,
+  recovery flows ou tokens de teste.
