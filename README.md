@@ -161,6 +161,28 @@ docker compose --env-file .env.example -f compose.yaml config
 docker compose --env-file .env.example -f compose.yaml up -d postgres
 ```
 
+### SPEC-001 / TASK-007
+
+Status: concluida.
+
+Redis local adicionado:
+
+- servico `redis` no `compose.yaml`;
+- imagem oficial `redis:8.10-alpine`;
+- porta host `43140` publicada apenas em `127.0.0.1`;
+- volume nomeado `mykeys_redis_data`;
+- persistencia local append-only ativada;
+- healthcheck com `redis-cli ping`;
+- validacao local de imagem, porta, volume, rede e healthcheck.
+
+Comandos principais:
+
+```bash
+pnpm check:compose
+docker compose --env-file .env.example -f compose.yaml config
+docker compose --env-file .env.example -f compose.yaml up -d redis
+```
+
 ### SPEC-001 / TASK-016
 
 Status: concluida antecipadamente.

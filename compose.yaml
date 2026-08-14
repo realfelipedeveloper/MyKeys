@@ -28,6 +28,40 @@ services:
       br.com.abbatech.namespace: mykeys
       br.com.abbatech.service: postgres
 
+  redis:
+    image: ${MYKEYS_REDIS_IMAGE:-redis:8.10-alpine}
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --save
+      - "60"
+      - "1"
+      - --loglevel
+      - warning
+    ports:
+      - "127.0.0.1:${MYKEYS_REDIS_PORT:-43140}:6379"
+    volumes:
+      - mykeys_redis_data:/data
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - -h
+        - 127.0.0.1
+        - ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mykeys_private
+    labels:
+      br.com.abbatech.project: mykeys
+      br.com.abbatech.namespace: mykeys
+      br.com.abbatech.service: redis
+
 networks:
   mykeys_private:
     name: ${MYKEYS_DOCKER_NETWORK:-mykeys_private}
@@ -42,3 +76,9 @@ volumes:
       br.com.abbatech.project: mykeys
       br.com.abbatech.namespace: mykeys
       br.com.abbatech.service: postgres
+  mykeys_redis_data:
+    name: ${MYKEYS_REDIS_DATA_VOLUME:-mykeys_redis_data}
+    labels:
+      br.com.abbatech.project: mykeys
+      br.com.abbatech.namespace: mykeys
+      br.com.abbatech.service: redis
