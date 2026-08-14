@@ -25,8 +25,8 @@ mykeys_private
 
 Ela usa labels:
 
-- `br.com.abbatech.project: mykeys`;
-- `br.com.abbatech.namespace: mykeys`.
+- `io.github.realfelipedeveloper.project: mykeys`;
+- `io.github.realfelipedeveloper.namespace: mykeys`.
 
 ## Serviços
 
@@ -70,3 +70,5 @@ O comando `pnpm check:compose` valida:
 - bind do PostgreSQL apenas em `127.0.0.1`;
 - bind do Redis apenas em `127.0.0.1`;
 - volumes nomeados e healthchecks de PostgreSQL e Redis.
+- labels de propriedade vinculadas a `realfelipedeveloper`, sem referencias
+  legadas a organizacoes externas.

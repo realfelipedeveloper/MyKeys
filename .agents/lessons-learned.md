@@ -71,3 +71,7 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
 - 2026-08-13: Redis local deve ser publicado apenas em loopback, com porta host
   nao padrao e sem segredos em `.env.example`; qualquer uso real precisa
   reavaliar licenca, autenticacao, ACLs e proibicao de plaintext.
+- 2026-08-14: Labels de infraestrutura Docker devem carregar a propriedade
+  `io.github.realfelipedeveloper.*`; referencias legadas a organizacoes
+  externas precisam ser barradas por validacao para nao voltarem em tasks
+  futuras.

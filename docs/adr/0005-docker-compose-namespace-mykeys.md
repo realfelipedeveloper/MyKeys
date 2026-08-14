@@ -19,7 +19,8 @@ Criar `compose.yaml` com:
 - `services: {}` enquanto os serviços reais nao forem adicionados;
 - rede privada `mykeys_private`, com nome configuravel por
   `MYKEYS_DOCKER_NETWORK`;
-- labels de projeto e namespace MyKeys.
+- labels de projeto e namespace MyKeys usando o prefixo
+  `io.github.realfelipedeveloper`.
 
 Criar `.env.example` com todos os nomes de porta da SPEC-001 usando portas nao
 comuns. Adicionar `tools/check-compose.mjs` para validar o arquivo com
@@ -38,6 +39,7 @@ uso de `container_name` ou portas comuns no Compose.
 ## Consequências positivas
 
 - O namespace local MyKeys fica estabelecido antes dos serviços.
+- A propriedade dos recursos Docker fica vinculada a `realfelipedeveloper`.
 - As portas oficiais ja ficam documentadas em `.env.example`.
 - O gate local valida o Compose sem depender do Docker daemon.
 - O Nx invalida cache quando arquivos de infraestrutura local mudam.
@@ -51,6 +53,7 @@ uso de `container_name` ou portas comuns no Compose.
 ## Riscos
 
 - Tarefas futuras podem introduzir serviços fora do namespace.
+- Tarefas futuras podem reintroduzir labels legadas de outra organizacao.
 - Tarefas futuras podem mapear portas comuns por engano.
 - Configuracoes locais em `.env` podem divergir do exemplo se nao forem
   verificadas.
