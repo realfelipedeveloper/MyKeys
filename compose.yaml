@@ -89,6 +89,40 @@ services:
       io.github.realfelipedeveloper.namespace: mykeys
       io.github.realfelipedeveloper.service: mailpit
 
+  minio:
+    image: ${MYKEYS_MINIO_IMAGE:-cgr.dev/chainguard/minio@sha256:4c94e754559e9fb91cefe103a056d63582b5892de612b647d8e1b0751af5067e}
+    restart: unless-stopped
+    user: "65532:65532"
+    command:
+      - server
+      - /data
+      - --address
+      - ":9000"
+      - --console-address
+      - ":9001"
+    ports:
+      - "127.0.0.1:${MYKEYS_MINIO_PORT:-43160}:9000"
+      - "127.0.0.1:${MYKEYS_MINIO_CONSOLE_PORT:-43161}:9001"
+    volumes:
+      - mykeys_minio_data:/data
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -ec
+        - >-
+          exec 3<>/dev/tcp/127.0.0.1/9000; printf 'GET /minio/health/ready HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n' >&3; IFS= read -r status <&3; [[ "$$status" == *"200 OK"* ]]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - mykeys_private
+    labels:
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
+      io.github.realfelipedeveloper.service: minio
+
 networks:
   mykeys_private:
     name: ${MYKEYS_DOCKER_NETWORK:-mykeys_private}
@@ -109,3 +143,9 @@ volumes:
       io.github.realfelipedeveloper.project: mykeys
       io.github.realfelipedeveloper.namespace: mykeys
       io.github.realfelipedeveloper.service: redis
+  mykeys_minio_data:
+    name: ${MYKEYS_MINIO_DATA_VOLUME:-mykeys_minio_data}
+    labels:
+      io.github.realfelipedeveloper.project: mykeys
+      io.github.realfelipedeveloper.namespace: mykeys
+      io.github.realfelipedeveloper.service: minio
