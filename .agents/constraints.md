@@ -11,6 +11,10 @@
   deve usar a porta host `5432`.
 - `MYKEYS_POSTGRES_AUTH_METHOD=trust` e permitido apenas para desenvolvimento
   local, sem dados reais e sem ambientes remotos.
+- Redis local deve permanecer em `127.0.0.1:${MYKEYS_REDIS_PORT}` e nao deve
+  usar a porta host `6379`.
+- Redis nao deve armazenar segredos descriptografados, senha-mestra, chaves,
+  recovery keys, CVV ou tokens sensiveis.
 - Mensagens de commit devem ser escritas sempre em português.
 - Fluxo Git obrigatório: `feature/*` -> `development` -> `homologation` ->
   `main`.

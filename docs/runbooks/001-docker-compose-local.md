@@ -29,10 +29,17 @@ docker compose --env-file .env.example -f compose.yaml config
 
 ## Subida local
 
-A `TASK-006` adicionou PostgreSQL. Para subir os servicos disponiveis, use:
+Ate a `TASK-007`, PostgreSQL e Redis estao disponiveis. Para subir todos os
+servicos atuais, use:
 
 ```bash
-docker compose --env-file .env.example -f compose.yaml up -d postgres
+docker compose --env-file .env.example -f compose.yaml up -d postgres redis
+```
+
+Para subir apenas Redis:
+
+```bash
+docker compose --env-file .env.example -f compose.yaml up -d redis
 ```
 
 Para uso com variaveis locais, copie `.env.example` para `.env` e ajuste apenas
@@ -43,6 +50,7 @@ valores nao sensiveis.
 - Nao usar `container_name`.
 - Nao usar portas comuns como `3000`, `3001`, `5432`, `6379` ou `8080` no host.
 - Nao inserir segredos reais em `.env.example`.
+- Nao gravar segredos descriptografados no Redis.
 - Nao executar comandos destrutivos globais de Docker.
 - Nao usar `docker compose down -v` sem decisao explicita de descarte dos dados
   locais.
