@@ -20,8 +20,25 @@ const expectedMailpitUiHostPort = "43151";
 const expectedMailpitSmtpContainerPort = 1025;
 const expectedMailpitUiContainerPort = 8025;
 const expectedMailpitMaxMessages = "500";
+const expectedMinioImage =
+  "cgr.dev/chainguard/minio@sha256:4c94e754559e9fb91cefe103a056d63582b5892de612b647d8e1b0751af5067e";
+const expectedMinioHostPort = "43160";
+const expectedMinioConsoleHostPort = "43161";
+const expectedMinioContainerPort = 9000;
+const expectedMinioConsoleContainerPort = 9001;
+const expectedMinioVolumeName = "mykeys_minio_data";
 const expectedLabelPrefix = "io.github.realfelipedeveloper";
-const forbiddenHostPorts = new Set(["3000", "3001", "5432", "6379", "8080"]);
+const forbiddenHostPorts = new Set([
+  "1025",
+  "3000",
+  "3001",
+  "5432",
+  "6379",
+  "8025",
+  "8080",
+  "9000",
+  "9001",
+]);
 const expectedPorts = {
   MYKEYS_WEB_PORT: "43110",
   MYKEYS_CORE_API_PORT: "43120",
@@ -51,8 +68,8 @@ assert.equal(
 const services = composeConfig.services ?? {};
 assert.deepEqual(
   Object.keys(services).sort(),
-  ["mailpit", "postgres", "redis"],
-  "TASK-008 must add PostgreSQL, Redis and Mailpit only",
+  ["mailpit", "minio", "postgres", "redis"],
+  "TASK-009 must add PostgreSQL, Redis, Mailpit and MinIO only",
 );
 
 assert.match(
@@ -63,6 +80,7 @@ assert.match(
 assert.match(composeSource, /^\s+postgres:\s*$/m, "compose must define the postgres service");
 assert.match(composeSource, /^\s+redis:\s*$/m, "compose must define the redis service");
 assert.match(composeSource, /^\s+mailpit:\s*$/m, "compose must define the mailpit service");
+assert.match(composeSource, /^\s+minio:\s*$/m, "compose must define the minio service");
 assert.doesNotMatch(
   composeSource,
   /\bcontainer_name\s*:/,
@@ -112,6 +130,18 @@ assert.match(
   "Mailpit UI must bind only to localhost and the SPEC-001 host port",
 );
 assert.match(composeSource, /\/readyz/, "Mailpit must define a readiness healthcheck");
+assert.match(
+  composeSource,
+  /127\.0\.0\.1:\$\{MYKEYS_MINIO_PORT:-43160\}:9000/,
+  "MinIO API must bind only to localhost and the SPEC-001 host port",
+);
+assert.match(
+  composeSource,
+  /127\.0\.0\.1:\$\{MYKEYS_MINIO_CONSOLE_PORT:-43161\}:9001/,
+  "MinIO Console must bind only to localhost and the SPEC-001 host port",
+);
+assert.match(composeSource, /\/minio\/health\/ready/, "MinIO must define a readiness healthcheck");
+assert.match(composeSource, /mykeys_minio_data:/, "MinIO must use a named volume");
 
 assert.equal(envExample.MYKEYS_COMPOSE_PROJECT_NAME, expectedProjectName);
 assert.equal(envExample.MYKEYS_DOCKER_NETWORK, expectedNetworkName);
@@ -124,10 +154,13 @@ assert.equal(envExample.MYKEYS_REDIS_IMAGE, expectedRedisImage);
 assert.equal(envExample.MYKEYS_REDIS_DATA_VOLUME, expectedRedisVolumeName);
 assert.equal(envExample.MYKEYS_MAILPIT_IMAGE, expectedMailpitImage);
 assert.equal(envExample.MYKEYS_MAILPIT_MAX_MESSAGES, expectedMailpitMaxMessages);
+assert.equal(envExample.MYKEYS_MINIO_IMAGE, expectedMinioImage);
+assert.equal(envExample.MYKEYS_MINIO_DATA_VOLUME, expectedMinioVolumeName);
 
 assertPostgresService(services.postgres);
 assertRedisService(services.redis);
 assertMailpitService(services.mailpit);
+assertMinioService(services.minio);
 assertNetwork(composeConfig.networks?.mykeys_private);
 
 for (const [name, port] of Object.entries(expectedPorts)) {
@@ -240,6 +273,53 @@ function assertMailpitService(service) {
   assert.match(healthcheck, /127\.0\.0\.1:8025\/readyz/);
 
   assert.ok(!service.volumes, "mailpit must stay ephemeral in TASK-008");
+}
+
+function assertMinioService(service) {
+  assert.ok(service, "minio service must exist");
+  assert.equal(service.image, expectedMinioImage);
+  assert.equal(service.restart, "unless-stopped");
+  assert.equal(service.user, "65532:65532");
+  assert.ok(
+    Object.hasOwn(service.networks ?? {}, "mykeys_private"),
+    "minio must join the MyKeys private network",
+  );
+  assertLabels(service.labels, "minio");
+
+  const command = service.command?.join?.(" ") ?? String(service.command ?? "");
+  assert.match(command, /server \/data/);
+  assert.match(command, /--address :9000/);
+  assert.match(command, /--console-address :9001/);
+
+  const ports = service.ports ?? [];
+  assert.equal(ports.length, 2, "minio must publish API and Console localhost ports");
+
+  const apiPort = ports.find((port) => port.target === expectedMinioContainerPort);
+  assert.ok(apiPort, "minio API port must be published");
+  assert.equal(apiPort.host_ip, "127.0.0.1");
+  assert.equal(apiPort.published, expectedMinioHostPort);
+  assert.ok(!forbiddenHostPorts.has(apiPort.published));
+
+  const consolePort = ports.find((port) => port.target === expectedMinioConsoleContainerPort);
+  assert.ok(consolePort, "minio Console port must be published");
+  assert.equal(consolePort.host_ip, "127.0.0.1");
+  assert.equal(consolePort.published, expectedMinioConsoleHostPort);
+  assert.ok(!forbiddenHostPorts.has(consolePort.published));
+
+  const healthcheck = service.healthcheck?.test?.join(" ") ?? "";
+  assert.match(healthcheck, /bash/);
+  assert.match(healthcheck, /\/minio\/health\/ready/);
+  assert.match(healthcheck, /HTTP\/1\.1/);
+  assert.match(healthcheck, /Host: 127\.0\.0\.1/);
+  assert.match(healthcheck, /Connection: close/);
+  assert.match(healthcheck, /200 OK/);
+
+  assert.deepEqual(service.volumes?.[0]?.target, "/data");
+
+  const volumes = composeConfig.volumes ?? {};
+  assert.ok(volumes.mykeys_minio_data, "minio named volume must exist");
+  assert.equal(volumes.mykeys_minio_data.name, expectedMinioVolumeName);
+  assertLabels(volumes.mykeys_minio_data.labels, "minio");
 }
 
 function assertNetwork(network) {

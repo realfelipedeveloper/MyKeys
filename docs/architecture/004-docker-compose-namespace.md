@@ -30,15 +30,15 @@ Ela usa labels:
 
 ## Serviços
 
-Ate a `TASK-008`, os servicos reais sao:
+Ate a `TASK-009`, os servicos reais sao:
 
 - `postgres`: PostgreSQL local.
 - `redis`: Redis local.
 - `mailpit`: SMTP e UI local para captura de e-mails de desenvolvimento.
+- `minio`: API S3 e Console local para object storage de desenvolvimento.
 
-Servicos restantes entram nas tarefas:
-
-- `TASK-009`: MinIO.
+Todos os servicos de infraestrutura local previstos no EPIC-002 ate a
+`TASK-009` estao representados no Compose.
 
 ## Portas
 
@@ -70,7 +70,9 @@ O comando `pnpm check:compose` valida:
 - bind do PostgreSQL apenas em `127.0.0.1`;
 - bind do Redis apenas em `127.0.0.1`;
 - bind do SMTP e UI do Mailpit apenas em `127.0.0.1`;
-- volumes nomeados e healthchecks de PostgreSQL e Redis.
+- bind da API e Console do MinIO apenas em `127.0.0.1`;
+- volumes nomeados e healthchecks de PostgreSQL, Redis e MinIO;
 - Mailpit efemero, sem volume persistente na `TASK-008`;
+- imagem MinIO pinada por digest imutavel;
 - labels de propriedade vinculadas a `realfelipedeveloper`, sem referencias
   legadas a organizacoes externas.
