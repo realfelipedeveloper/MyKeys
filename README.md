@@ -205,6 +205,29 @@ docker compose --env-file .env.example -f compose.yaml config
 docker compose --env-file .env.example -f compose.yaml up -d mailpit
 ```
 
+### SPEC-001 / TASK-009
+
+Status: concluida.
+
+MinIO local adicionado:
+
+- servico `minio` no `compose.yaml`;
+- imagem `cgr.dev/chainguard/minio` pinada por digest;
+- API S3 publicada apenas em `127.0.0.1:43160`;
+- Console publicada apenas em `127.0.0.1:43161`;
+- volume nomeado `mykeys_minio_data`;
+- healthcheck HTTP em `/minio/health/ready`;
+- execucao como usuario nao-root `65532:65532`;
+- sem secrets commitados para root credentials.
+
+Comandos principais:
+
+```bash
+pnpm check:compose
+docker compose --env-file .env.example -f compose.yaml config
+docker compose --env-file .env.example -f compose.yaml up -d minio
+```
+
 ### SPEC-001 / TASK-016
 
 Status: concluida antecipadamente.
@@ -241,6 +264,7 @@ pnpm build
 - ORM: Prisma
 - Cache e filas: Redis + BullMQ
 - E-mail local: Mailpit
+- Object storage local: MinIO
 - Infra local: Docker Compose
 - Testes: Jest, Testing Library, Supertest, Testcontainers, Playwright, Pact, StrykerJS, fast-check, k6 e OWASP ZAP
 - Arquitetura: microsserviços pragmáticos, DDD pragmático, Clean Architecture, SOLID, Ports and Adapters

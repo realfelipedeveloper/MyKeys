@@ -24,6 +24,15 @@
 - Mailpit nao deve persistir caixa de e-mail nem configurar relay externo na
   `TASK-008`.
 - Mailpit nao deve receber e-mails reais, dados pessoais reais ou tokens reais.
+- MinIO local deve permanecer em `127.0.0.1:${MYKEYS_MINIO_PORT}` e
+  `127.0.0.1:${MYKEYS_MINIO_CONSOLE_PORT}`, sem usar as portas host `9000` ou
+  `9001`.
+- MinIO deve usar imagem pinada por digest e nao deve usar `latest` ou tag
+  mutavel no Compose.
+- MinIO nao deve receber arquivos reais, anexos reais, segredos
+  descriptografados, recovery keys, CVV ou tokens sensiveis.
+- `.env.example` nao deve conter `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` ou
+  credenciais equivalentes.
 - Mensagens de commit devem ser escritas sempre em português.
 - Fluxo Git obrigatório: `feature/*` -> `development` -> `homologation` ->
   `main`.

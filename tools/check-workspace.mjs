@@ -109,6 +109,7 @@ assert.match(composeYaml, /^name:\s+\$\{MYKEYS_COMPOSE_PROJECT_NAME:-mykeys\}/m)
 assert.match(composeYaml, /^\s+postgres:\s*$/m);
 assert.match(composeYaml, /^\s+redis:\s*$/m);
 assert.match(composeYaml, /^\s+mailpit:\s*$/m);
+assert.match(composeYaml, /^\s+minio:\s*$/m);
 assert.doesNotMatch(composeYaml, /\bcontainer_name\s*:/);
 assert.match(composeYaml, /MYKEYS_DOCKER_NETWORK:-mykeys_private/);
 assert.doesNotMatch(composeYaml, legacyOwnerPattern);
@@ -128,6 +129,15 @@ assert.match(composeYaml, /axllent\/mailpit:v1\.30\.7/);
 assert.match(composeYaml, /127\.0\.0\.1:\$\{MYKEYS_MAIL_SMTP_PORT:-43150\}:1025/);
 assert.match(composeYaml, /127\.0\.0\.1:\$\{MYKEYS_MAIL_UI_PORT:-43151\}:8025/);
 assert.match(composeYaml, /\/readyz/);
+assert.match(
+  composeYaml,
+  /cgr\.dev\/chainguard\/minio@sha256:4c94e754559e9fb91cefe103a056d63582b5892de612b647d8e1b0751af5067e/,
+);
+assert.match(composeYaml, /127\.0\.0\.1:\$\{MYKEYS_MINIO_PORT:-43160\}:9000/);
+assert.match(composeYaml, /127\.0\.0\.1:\$\{MYKEYS_MINIO_CONSOLE_PORT:-43161\}:9001/);
+assert.match(composeYaml, /\/minio\/health\/ready/);
+assert.match(composeYaml, /HTTP\/1\.1\\r\\nHost: 127\.0\.0\.1\\r\\nConnection: close/);
+assert.match(composeYaml, /mykeys_minio_data/);
 assert.match(envExample, /^MYKEYS_COMPOSE_PROJECT_NAME=mykeys$/m);
 assert.match(envExample, /^MYKEYS_DOCKER_NETWORK=mykeys_private$/m);
 assert.match(envExample, /^MYKEYS_POSTGRES_IMAGE=postgres:18-alpine$/m);
@@ -143,6 +153,13 @@ assert.match(envExample, /^MYKEYS_MAILPIT_IMAGE=axllent\/mailpit:v1\.30\.7$/m);
 assert.match(envExample, /^MYKEYS_MAILPIT_MAX_MESSAGES=500$/m);
 assert.match(envExample, /^MYKEYS_MAIL_SMTP_PORT=43150$/m);
 assert.match(envExample, /^MYKEYS_MAIL_UI_PORT=43151$/m);
+assert.match(
+  envExample,
+  /^MYKEYS_MINIO_IMAGE=cgr\.dev\/chainguard\/minio@sha256:4c94e754559e9fb91cefe103a056d63582b5892de612b647d8e1b0751af5067e$/m,
+);
+assert.match(envExample, /^MYKEYS_MINIO_PORT=43160$/m);
+assert.match(envExample, /^MYKEYS_MINIO_CONSOLE_PORT=43161$/m);
+assert.match(envExample, /^MYKEYS_MINIO_DATA_VOLUME=mykeys_minio_data$/m);
 assert.match(ciWorkflow, /pull_request:\s+branches:\s+- development\s+- homologation\s+- main/s);
 assert.match(ciWorkflow, /push:\s+branches:\s+- development\s+- homologation\s+- main/s);
 assert.match(ciWorkflow, /pnpm install --frozen-lockfile/);
