@@ -78,3 +78,7 @@ approve pull requests`; como a permissão também habilita aprovação, o workfl
 - 2026-08-14: Mailpit local deve ficar efemero na fundacao; persistir a caixa
   de e-mail aumenta risco de retenção de dados pessoais, links de magic login,
   recovery flows ou tokens de teste.
+- 2026-08-14: A imagem oficial `minio/minio` no Docker Hub esta arquivada e a
+  release de seguranca `RELEASE.2025-10-15T17-29-55Z` nao tem manifest publico
+  nessa registry; para desenvolvimento local, usar imagem MinIO mantida pela
+  Chainguard e pinada por digest reduz drift e evita dependencia congelada.
