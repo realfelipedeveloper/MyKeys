@@ -58,7 +58,7 @@ aplicacoes nesta fase.
 - `pnpm build`;
 - `pnpm audit --audit-level high`;
 - `pnpm nx show projects`;
-- `rg -n -i "abbatech|abbatechrepository|abbatechtemp" .`;
+- varredura local de referencias legadas de autoria em conteudo versionado;
 - smoke local de MinIO com:
   - verificacao das portas `43160` e `43161`;
   - `docker compose up -d minio`;
